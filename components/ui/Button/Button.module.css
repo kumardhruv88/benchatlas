@@ -1,0 +1,144 @@
+/* BenchAtlas — Button Component */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-family: var(--font-sans);
+  font-weight: var(--weight-medium);
+  font-size: var(--text-sm);
+  line-height: 1;
+  white-space: nowrap;
+  border-radius: var(--radius-md);
+  transition:
+    background-color var(--duration-fast) var(--ease-default),
+    color var(--duration-fast) var(--ease-default),
+    border-color var(--duration-fast) var(--ease-default),
+    box-shadow var(--duration-fast) var(--ease-default),
+    transform var(--duration-fast) var(--ease-default);
+  user-select: none;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+.button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ── Variants ─────────────────────────────────────────────────────── */
+
+.button--primary {
+  background-color: var(--color-text-primary);
+  color: var(--color-text-inverse);
+  border-color: var(--color-text-primary);
+}
+
+.button--primary:hover {
+  background-color: var(--color-text-secondary);
+  border-color: var(--color-text-secondary);
+}
+
+.button--secondary {
+  background-color: var(--color-surface-2);
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+}
+
+.button--secondary:hover {
+  background-color: var(--color-surface-3);
+  border-color: var(--color-border-strong);
+}
+
+.button--accent {
+  background-color: var(--color-accent);
+  color: var(--color-white);
+  border-color: var(--color-accent);
+}
+
+.button--accent:hover {
+  background-color: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+}
+
+.button--ghost {
+  background-color: transparent;
+  color: var(--color-text-secondary);
+  border-color: transparent;
+}
+
+.button--ghost:hover {
+  background-color: var(--color-surface-2);
+  color: var(--color-text-primary);
+}
+
+.button--danger {
+  background-color: var(--color-status-danger-bg);
+  color: var(--color-status-danger);
+  border-color: var(--color-status-danger-border);
+}
+
+.button--danger:hover {
+  background-color: var(--color-status-danger);
+  color: var(--color-white);
+}
+
+/* ── Sizes ────────────────────────────────────────────────────────── */
+
+.button--xs {
+  font-size: var(--text-xs);
+  padding: var(--space-1) var(--space-3);
+  gap: var(--space-1);
+}
+
+.button--sm {
+  padding: var(--space-2) var(--space-4);
+}
+
+.button--md {
+  padding: var(--space-2) var(--space-5);
+}
+
+.button--lg {
+  font-size: var(--text-base);
+  padding: var(--space-3) var(--space-6);
+}
+
+/* ── Icon only ────────────────────────────────────────────────────── */
+
+.button--icon {
+  padding: var(--space-2);
+  aspect-ratio: 1;
+}
+
+.button--icon.button--sm {
+  padding: var(--space-1) var(--space-2);
+}
+
+/* ── Loading ──────────────────────────────────────────────────────── */
+
+.button--loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.spinner {
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: var(--radius-full);
+  animation: spin 0.6s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

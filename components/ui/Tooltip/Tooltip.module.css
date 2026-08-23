@@ -1,0 +1,87 @@
+.tooltip_wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip_content {
+  position: absolute;
+  z-index: 100;
+  background-color: var(--color-surface-inverted);
+  color: var(--color-text-inverted);
+  font-size: var(--text-xs);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--duration-fast) var(--ease-default),
+              visibility var(--duration-fast) var(--ease-default);
+  pointer-events: none;
+}
+
+.tooltip_wrapper:hover .tooltip_content,
+.tooltip_wrapper:focus-within .tooltip_content {
+  opacity: 1;
+  visibility: visible;
+}
+
+.arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+/* Positioning variants */
+
+.top {
+  bottom: calc(100% + var(--space-2));
+  left: 50%;
+  transform: translateX(-50%);
+}
+.top .arrow {
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 4px 4px 0 4px;
+  border-color: var(--color-surface-inverted) transparent transparent transparent;
+}
+
+.bottom {
+  top: calc(100% + var(--space-2));
+  left: 50%;
+  transform: translateX(-50%);
+}
+.bottom .arrow {
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 4px 4px 4px;
+  border-color: transparent transparent var(--color-surface-inverted) transparent;
+}
+
+.left {
+  right: calc(100% + var(--space-2));
+  top: 50%;
+  transform: translateY(-50%);
+}
+.left .arrow {
+  right: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 4px 0 4px 4px;
+  border-color: transparent transparent transparent var(--color-surface-inverted);
+}
+
+.right {
+  left: calc(100% + var(--space-2));
+  top: 50%;
+  transform: translateY(-50%);
+}
+.right .arrow {
+  left: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 4px 4px 4px 0;
+  border-color: transparent var(--color-surface-inverted) transparent transparent;
+}

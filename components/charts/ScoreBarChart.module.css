@@ -1,0 +1,10 @@
+.chart_container {
+  width: 100%;
+  position: relative;
+  font-family: var(--font-sans);
+}
+
+.chart_container :global(.recharts-tooltip-cursor) {
+  fill: var(--color-surface-2);
+  opacity: 0.5;
+}
