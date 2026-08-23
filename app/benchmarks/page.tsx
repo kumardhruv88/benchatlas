@@ -339,7 +339,14 @@ function BenchmarksDirectory() {
                 ))}
               </div>
             ) : (
-              <div className={styles.bench_list_view} role="list">
+              <div className={styles.bench_list_view} role="table" aria-label="Benchmark list">
+                <div className={styles.bench_list_head} role="row" aria-hidden="true">
+                  <span className={styles.bench_list_head_cell}>Benchmark</span>
+                  <span className={styles.bench_list_head_cell}>Category</span>
+                  <span className={styles.bench_list_head_cell}>Status</span>
+                  <span className={styles.bench_list_head_cell}>Top score</span>
+                  <span />
+                </div>
                 {filtered.map((b) => (
                   <BenchmarkListRow key={b.id} benchmark={b} />
                 ))}
@@ -396,7 +403,7 @@ function BenchmarkCard({ benchmark: b }: { benchmark: BenchmarkSummary }) {
 
 function BenchmarkListRow({ benchmark: b }: { benchmark: BenchmarkSummary }) {
   return (
-    <article role="listitem">
+    <article role="row">
       <Link href={`/benchmarks/${b.slug}`} className={styles.bench_list_row}>
         <div className={styles.bench_list_row_name}>
           <span className={styles.bench_list_row_title}>{b.name}</span>
@@ -407,12 +414,15 @@ function BenchmarkListRow({ benchmark: b }: { benchmark: BenchmarkSummary }) {
         </div>
         <div className={styles.bench_list_row_badges}>
           <SaturationBadge status={b.saturationStatus} />
-          <ContaminationBadge risk={b.contaminationRisk} />
         </div>
-        {b.topScore != null && (
-          <span className={styles.bench_list_row_score}>{formatScore(b.topScore)}</span>
-        )}
-        <ExternalLink size={13} className={styles.bench_list_row_arrow} aria-hidden="true" />
+        <div>
+          {b.topScore != null ? (
+            <span className={styles.bench_list_row_score}>{formatScore(b.topScore)}</span>
+          ) : (
+            <span className={styles.bench_list_row_score} style={{ color: 'var(--color-text-quaternary)' }}>—</span>
+          )}
+        </div>
+        <ExternalLink size={12} className={styles.bench_list_row_arrow} aria-hidden="true" />
       </Link>
     </article>
   );

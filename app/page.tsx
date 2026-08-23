@@ -1,21 +1,10 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
+import type { ElementType } from 'react';
 import {
-  BarChart2,
-  BookOpen,
-  ArrowRight,
-  Cpu,
-  Search,
-  GitCompare,
-  ShieldCheck,
-  TrendingUp,
-  FlaskConical,
-  Globe,
-  Code,
-  Brain,
-  Calculator,
-  Eye,
+  BarChart2, BookOpen, ArrowRight, Cpu,
+  GitCompare, ShieldCheck,
+  Globe, Code, Brain, Calculator, Eye,
 } from 'lucide-react';
 import styles from './page.module.css';
 import { CategoryBadge, SaturationBadge } from '@/components/ui/Badge';
@@ -24,20 +13,14 @@ import { getFeaturedBenchmarks, getBenchmarkStats, getDistinctCategories } from 
 import { formatCategory, formatScore } from '@/lib/utils/format';
 import type { BenchmarkCategory } from '@/lib/types';
 
-const NeuralNetCanvas = dynamic(
-  () => import('@/components/ui/NeuralNetCanvas/NeuralNetCanvas').then((m) => ({ default: m.NeuralNetCanvas })),
-  { ssr: false }
-);
-
+import { NeuralNetCanvasClient } from '@/components/ui/NeuralNetCanvas/NeuralNetCanvasClient';
 
 export const metadata: Metadata = {
   title: 'BenchAtlas — LLM Benchmark Intelligence Platform',
-  description:
-    'Research-grade platform for discovering, comparing, and understanding LLM evaluation benchmarks across all capability domains.',
+  description: 'Research-grade platform for discovering, comparing, and understanding LLM evaluation benchmarks across all capability domains.',
 };
 
-// ─── Category icon map ────────────────────────────────────────────────────────
-const CATEGORY_ICONS: Partial<Record<BenchmarkCategory, React.ElementType>> = {
+const CATEGORY_ICONS: Partial<Record<BenchmarkCategory, ElementType>> = {
   knowledge: BookOpen,
   reasoning: Brain,
   mathematics: Calculator,
@@ -57,113 +40,101 @@ const CATEGORY_ORDER: BenchmarkCategory[] = [
   'multilingual', 'safety-alignment', 'factuality', 'agentic-tool-use',
 ];
 
-// ─── Mini score visualization data ───────────────────────────────────────────
 const VISUAL_SCORES = [
-  { model: 'Claude 3.5 Sonnet', score: 88.3, color: 'var(--chart-2)' },
-  { model: 'GPT-4o', score: 87.0, color: 'var(--chart-1)' },
-  { model: 'Llama 3.1 405B', score: 86.4, color: 'var(--chart-4)' },
-  { model: 'Gemini 1.5 Pro', score: 84.1, color: 'var(--chart-3)' },
-  { model: 'Mistral Large 2', score: 81.2, color: 'var(--chart-5)' },
+  { model: 'Claude 3.5 Sonnet', score: 88.3 },
+  { model: 'GPT-4o',            score: 87.0 },
+  { model: 'Llama 3.1 405B',    score: 86.4 },
+  { model: 'Gemini 1.5 Pro',    score: 84.1 },
+  { model: 'Mistral Large 2',   score: 81.2 },
 ];
 
 export default function HomePage() {
-  const featured = getFeaturedBenchmarks();
-  const stats = getBenchmarkStats();
+  const featured   = getFeaturedBenchmarks();
+  const stats      = getBenchmarkStats();
   const categories = getDistinctCategories();
 
   return (
     <>
-      {/* ── Hero ───────────────────────────────────────────────────────── */}
+      {/* ── Hero ───────────────────────────────────────────────── */}
       <section className={styles.hero} aria-labelledby="hero-heading">
-        <NeuralNetCanvas />
+        <NeuralNetCanvasClient />
         <div className={`container ${styles.hero__inner}`}>
           <div className={styles.hero__content}>
-            <div className={styles.hero__eyebrow}>
-              <FlaskConical size={12} aria-hidden="true" />
+            <p className={styles.hero__label}>
               Research Intelligence Platform
-            </div>
+            </p>
 
             <h1 id="hero-heading" className={styles.hero__title}>
               Which benchmark should you <em>trust</em> for what?
             </h1>
 
             <p className={styles.hero__subtitle}>
-              A structured intelligence platform covering every major LLM evaluation benchmark.
-              Understand methodology, saturation, contamination risk, score history, and when
-              to trust — or distrust — a result.
+              Structured intelligence covering every major LLM evaluation benchmark.
+              Understand methodology, saturation, contamination risk, and score history.
             </p>
 
             <div className={styles.hero__actions}>
               <Button variant="primary" size="lg" as="a" href="/benchmarks">
                 Explore Benchmarks
-                <ArrowRight size={16} aria-hidden="true" />
+                <ArrowRight size={14} aria-hidden="true" />
               </Button>
-              <Button variant="secondary" size="lg" as="a" href="/leaderboards">
-                View Leaderboards
-              </Button>
-              <Button variant="ghost" size="lg" as="a" href="/compare">
-                <GitCompare size={16} aria-hidden="true" />
+              <Button variant="secondary" size="lg" as="a" href="/compare">
+                <GitCompare size={14} aria-hidden="true" />
                 Compare Models
               </Button>
             </div>
 
-            {/* Stats bar */}
             <div className={styles.hero__stats} role="list" aria-label="Platform statistics">
               <div className={styles.hero__stat} role="listitem">
                 <span className={styles.hero__stat_value}>{stats.total}</span>
-                <span className={styles.hero__stat_label}>Benchmarks tracked</span>
+                <span className={styles.hero__stat_label}>Benchmarks</span>
               </div>
               <div className={styles.hero__stat} role="listitem">
                 <span className={styles.hero__stat_value}>{stats.categories}</span>
-                <span className={styles.hero__stat_label}>Capability categories</span>
+                <span className={styles.hero__stat_label}>Capabilities</span>
               </div>
               <div className={styles.hero__stat} role="listitem">
                 <span className={styles.hero__stat_value}>{stats.totalScores}</span>
-                <span className={styles.hero__stat_label}>Model evaluations indexed</span>
+                <span className={styles.hero__stat_label}>Evaluations</span>
               </div>
               <div className={styles.hero__stat} role="listitem">
                 <span className={styles.hero__stat_value}>{stats.saturated}</span>
-                <span className={styles.hero__stat_label}>Saturated benchmarks</span>
+                <span className={styles.hero__stat_label}>Saturated</span>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-
-      {/* ── Category Explorer ──────────────────────────────────────────── */}
+      {/* ── Categories ─────────────────────────────────────────── */}
       <section className={styles.section} aria-labelledby="categories-heading">
         <div className="container">
           <div className={styles.section__header}>
             <div>
+              <p className={styles.section__label}>Explore by domain</p>
               <h2 id="categories-heading" className={styles.section__heading}>
-                Browse by capability
+                Capability categories
               </h2>
-              <p className={styles.section__subheading}>
-                {categories.length} capability domains covered
-              </p>
             </div>
-            <Link href="/benchmarks" className={styles.section__link} aria-label="View all benchmarks">
-              All benchmarks <ArrowRight size={14} aria-hidden="true" />
+            <Link href="/benchmarks" className={styles.section__link}>
+              All {stats.total} benchmarks <ArrowRight size={12} aria-hidden="true" />
             </Link>
           </div>
 
-          <nav className={styles.categories__grid} aria-label="Benchmark categories">
+          <nav className={styles.categories__list} aria-label="Benchmark categories">
             {CATEGORY_ORDER.filter((c) => categories.includes(c)).map((cat) => {
               const Icon = CATEGORY_ICONS[cat] ?? BarChart2;
               return (
                 <Link
                   key={cat}
                   href={`/benchmarks?category=${cat}`}
-                  className={styles.category_card}
+                  className={styles.category_tag}
                   aria-label={`Browse ${formatCategory(cat)} benchmarks`}
                 >
-                  <span className={styles.category_card__icon} aria-hidden="true">
-                    <Icon size={16} />
+                  <span className={styles.category_tag__icon} aria-hidden="true">
+                    <Icon size={13} />
                   </span>
-                  <div>
-                    <div className={styles.category_card__name}>{formatCategory(cat)}</div>
-                  </div>
+                  {formatCategory(cat)}
                 </Link>
               );
             })}
@@ -171,7 +142,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Featured Benchmarks ────────────────────────────────────────── */}
+      {/* ── Featured Benchmarks ─────────────────────────────────── */}
       <section
         className={`${styles.section} ${styles['section--shaded']}`}
         aria-labelledby="featured-heading"
@@ -179,83 +150,72 @@ export default function HomePage() {
         <div className="container">
           <div className={styles.section__header}>
             <div>
+              <p className={styles.section__label}>Landmark evaluations</p>
               <h2 id="featured-heading" className={styles.section__heading}>
-                Landmark benchmarks
+                Most cited benchmarks
               </h2>
-              <p className={styles.section__subheading}>
-                The most widely cited evaluations in the field
-              </p>
             </div>
             <Link href="/benchmarks" className={styles.section__link}>
-              All {stats.total} benchmarks <ArrowRight size={14} aria-hidden="true" />
+              Browse all <ArrowRight size={12} aria-hidden="true" />
             </Link>
           </div>
 
-          <div className={styles.featured__grid} role="list">
-            {featured.map((benchmark) => (
-              <article key={benchmark.id} role="listitem">
-                <Link href={`/benchmarks/${benchmark.slug}`} className={styles.bench_card}>
-                  {/* Header */}
-                  <div className={styles.bench_card__header}>
-                    <CategoryBadge category={benchmark.category} />
-                    {benchmark.abbreviation && (
-                      <span className={styles.bench_card__abbr}>{benchmark.abbreviation}</span>
-                    )}
-                  </div>
-
-                  {/* Title */}
-                  <div>
-                    <h3 className={styles.bench_card__name}>{benchmark.name}</h3>
-                    <p className={styles.bench_card__purpose}>{benchmark.purpose}</p>
-                  </div>
-
-                  {/* Meta grid */}
-                  <div className={styles.bench_card__meta}>
-                    {benchmark.topScore != null && (
-                      <div className={styles.bench_card__meta_item}>
-                        <span className={styles.bench_card__meta_label}>Top score</span>
-                        <span className={styles.bench_card__meta_value}>
-                          {formatScore(benchmark.topScore)}
-                        </span>
-                      </div>
-                    )}
-                    {benchmark.humanBaseline != null && (
-                      <div className={styles.bench_card__meta_item}>
-                        <span className={styles.bench_card__meta_label}>Human baseline</span>
-                        <span className={styles.bench_card__meta_value}>
-                          {formatScore(benchmark.humanBaseline)}
-                        </span>
-                      </div>
-                    )}
-                    {benchmark.datasetSizeLabel && (
-                      <div className={styles.bench_card__meta_item}>
-                        <span className={styles.bench_card__meta_label}>Dataset</span>
-                        <span className={styles.bench_card__meta_value}>
-                          {benchmark.datasetSizeLabel}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Footer badges */}
-                  <div className={styles.bench_card__footer}>
-                    <SaturationBadge status={benchmark.saturationStatus} />
-                  </div>
-                </Link>
-              </article>
+          <div className={styles.bench_table} role="table" aria-label="Featured benchmarks">
+            <div className={styles.bench_table_head} role="row" aria-hidden="true">
+              <span className={styles.bench_table_head_cell}>Benchmark</span>
+              <span className={styles.bench_table_head_cell}>Category</span>
+              <span className={styles.bench_table_head_cell}>Top score</span>
+              <span className={styles.bench_table_head_cell}>Human baseline</span>
+              <span className={styles.bench_table_head_cell}>Status</span>
+            </div>
+            {featured.map((b) => (
+              <Link
+                key={b.id}
+                href={`/benchmarks/${b.slug}`}
+                className={styles.bench_table_row}
+                role="row"
+              >
+                <div className={styles.bench_row__name}>
+                  <span className={styles.bench_row__title}>{b.name}</span>
+                  {b.abbreviation && (
+                    <span className={styles.bench_row__abbr}>{b.abbreviation}</span>
+                  )}
+                </div>
+                <div>
+                  <CategoryBadge category={b.category} size="sm" />
+                </div>
+                <div>
+                  {b.topScore != null ? (
+                    <span className={styles.bench_row__score}>{formatScore(b.topScore)}</span>
+                  ) : (
+                    <span className={styles.bench_row__score_empty}>—</span>
+                  )}
+                </div>
+                <div>
+                  {b.humanBaseline != null ? (
+                    <span className={styles.bench_row__score}>{formatScore(b.humanBaseline)}</span>
+                  ) : (
+                    <span className={styles.bench_row__score_empty}>—</span>
+                  )}
+                </div>
+                <div>
+                  <SaturationBadge status={b.saturationStatus} />
+                </div>
+              </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── What is BenchAtlas ─────────────────────────────────────────── */}
+      {/* ── About / Explainer ──────────────────────────────────── */}
       <section className={styles.section} aria-labelledby="about-heading">
         <div className="container">
           <div className={styles.explainer}>
-            {/* Text */}
+            {/* Text column */}
             <div>
+              <p className={styles.explainer__label}>Why BenchAtlas</p>
               <h2 id="about-heading" className={styles.explainer__title}>
-                Not just a leaderboard.
+                Not just a leaderboard.{' '}
                 <br />A research instrument.
               </h2>
               <p className={styles.explainer__body}>
@@ -263,38 +223,29 @@ export default function HomePage() {
                 what the number <em>means</em> — its methodology, its limitations,
                 its contamination risk, and whether it still discriminates between models.
               </p>
-              <p className={styles.explainer__body}>
-                Every benchmark profile documents saturation status, data leakage risks,
-                known criticisms, methodology details, and which evaluation tasks it is —
-                and is not — suited for.
-              </p>
 
-              <div className={styles.explainer__features}>
+              <div className={styles.explainer__feature_list}>
                 {[
                   {
-                    icon: Search,
                     title: 'Methodology transparency',
                     desc: 'Understand exactly how each benchmark was constructed and scored.',
                   },
                   {
-                    icon: TrendingUp,
                     title: 'Score history & trends',
-                    desc: 'Track performance evolution over time across model releases.',
+                    desc: 'Track performance evolution across model releases.',
                   },
                   {
-                    icon: ShieldCheck,
                     title: 'Saturation & contamination flags',
                     desc: 'Know when a benchmark is no longer discriminative or trustworthy.',
                   },
                   {
-                    icon: GitCompare,
                     title: 'Cross-benchmark comparison',
-                    desc: 'Choose the right benchmark for your specific evaluation task.',
+                    desc: 'Choose the right benchmark for your evaluation task.',
                   },
-                ].map(({ icon: Icon, title, desc }) => (
+                ].map(({ title, desc }, i) => (
                   <div key={title} className={styles.explainer__feature}>
-                    <span className={styles.explainer__feature_icon} aria-hidden="true">
-                      <Icon size={16} />
+                    <span className={styles.explainer__feature_num}>
+                      {String(i + 1).padStart(2, '0')}
                     </span>
                     <div>
                       <h4 className={styles.explainer__feature_title}>{title}</h4>
@@ -305,32 +256,31 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Visual panel — mini score display */}
+            {/* Visual panel */}
             <div
               className={styles.visual_panel}
               role="img"
               aria-label="Example model scores on MMLU benchmark"
             >
-              <p className={styles.visual_panel__title}>MMLU — 5-shot accuracy</p>
-
-              {VISUAL_SCORES.map(({ model, score, color }) => (
-                <div key={model} className={styles.score_row}>
-                  <div className={styles.score_row__header}>
-                    <span className={styles.score_row__model}>{model}</span>
-                    <span className={styles.score_row__score}>{score.toFixed(1)}%</span>
+              <div className={styles.visual_panel__header}>
+                <p className={styles.visual_panel__title}>MMLU — 5-shot accuracy</p>
+              </div>
+              <div className={styles.visual_panel__body}>
+                {VISUAL_SCORES.map(({ model, score }) => (
+                  <div key={model} className={styles.score_row}>
+                    <div className={styles.score_row__left}>
+                      <span className={styles.score_row__model}>{model}</span>
+                      <div className={styles.score_row__bar}>
+                        <div
+                          className={styles.score_row__fill}
+                          style={{ width: `${score}%` }}
+                        />
+                      </div>
+                    </div>
+                    <span className={styles.score_row__score}>{score.toFixed(1)}</span>
                   </div>
-                  <div className={styles.score_row__bar}>
-                    <div
-                      className={styles.score_row__fill}
-                      style={{
-                        width: `${score}%`,
-                        background: color,
-                      }}
-                    />
-                  </div>
-                </div>
-              ))}
-
+                ))}
+              </div>
               <p className={styles.visual_caption}>
                 Illustrative — hover any benchmark for full score history
               </p>

@@ -476,7 +476,7 @@ export default async function BenchmarkDetailPage({
               <h2 id="links-heading" className={styles.section_title}>
                 External resources
               </h2>
-              <div className={styles.links_grid}>
+              <div className={styles.links_list}>
                 {benchmark.paper && (
                   <a
                     href={benchmark.paper.url}
