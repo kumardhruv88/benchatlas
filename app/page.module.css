@@ -3,24 +3,23 @@
 /* ── Hero ─────────────────────────────────────────────────────────── */
 
 .hero {
-  padding: var(--space-20) 0 var(--space-16);
+  padding: var(--space-16) 0 var(--space-14);
   border-bottom: 1px solid var(--color-border-subtle);
   position: relative;
   overflow: hidden;
-}
-
-.hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 60% 50% at 70% -10%, rgba(37, 99, 235, 0.04) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 40% at 10% 80%, rgba(139, 92, 246, 0.03) 0%, transparent 70%);
-  pointer-events: none;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
 }
 
 .hero__inner {
   position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+.hero__content {
+  max-width: 560px;
 }
 
 .hero__eyebrow {
@@ -59,7 +58,7 @@
   font-size: var(--text-lg);
   color: var(--color-text-secondary);
   line-height: var(--leading-relaxed);
-  max-width: 580px;
+  max-width: 520px;
   margin-bottom: var(--space-8);
 }
 
@@ -73,7 +72,7 @@
 .hero__stats {
   display: flex;
   gap: var(--space-8);
-  margin-top: var(--space-12);
+  margin-top: var(--space-10);
   padding-top: var(--space-8);
   border-top: 1px solid var(--color-border-subtle);
   flex-wrap: wrap;

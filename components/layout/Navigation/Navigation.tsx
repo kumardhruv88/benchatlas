@@ -101,19 +101,19 @@ export function Navigation() {
           {/* Actions */}
           <div className={styles.nav__actions}>
             {/* Search trigger */}
-            <button
-              className={styles.nav__search_trigger}
+            <Link
+              href="/benchmarks"
+              className={styles['nav__search-trigger']}
               aria-label="Search benchmarks"
-              type="button"
             >
               <Search size={14} aria-hidden="true" />
               <span>Search benchmarks…</span>
-              <kbd className={styles.nav__search_hint}>⌘K</kbd>
-            </button>
+              <kbd className={styles['nav__search-hint']}>⌘K</kbd>
+            </Link>
 
             {/* Mobile toggle */}
             <button
-              className={styles.nav__mobile_toggle}
+              className={styles['nav__mobile-toggle']}
               onClick={() => setMobileOpen(!mobileOpen)}
               aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={mobileOpen}
@@ -128,8 +128,8 @@ export function Navigation() {
       {/* Mobile Menu */}
       <div
         className={[
-          styles.nav__mobile_menu,
-          mobileOpen && styles['nav__mobile_menu--open'],
+          styles['nav__mobile-menu'],
+          mobileOpen && styles['nav__mobile-menu--open'],
         ]
           .filter(Boolean)
           .join(' ')}
@@ -144,8 +144,8 @@ export function Navigation() {
               key={href}
               href={href}
               className={[
-                styles.nav__mobile_link,
-                isActive && styles['nav__mobile_link--active'],
+                styles['nav__mobile-link'],
+                isActive && styles['nav__mobile-link--active'],
               ]
                 .filter(Boolean)
                 .join(' ')}
@@ -156,12 +156,12 @@ export function Navigation() {
             </Link>
           );
         })}
-        <div className={styles.nav__mobile_divider} />
-        <Link href="/about" className={styles.nav__mobile_link}>
+        <div className={styles['nav__mobile-divider']} />
+        <Link href="/about" className={styles['nav__mobile-link']}>
           <BookOpen size={18} aria-hidden="true" />
           About
         </Link>
-        <Link href="/api-docs" className={styles.nav__mobile_link}>
+        <Link href="/api-docs" className={styles['nav__mobile-link']}>
           <Zap size={18} aria-hidden="true" />
           API
         </Link>

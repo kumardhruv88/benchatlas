@@ -1,0 +1,24 @@
+.wrapper {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    var(--color-paper) 0%,
+    var(--color-paper) 45%,
+    transparent 70%
+  );
+  pointer-events: none;
+}

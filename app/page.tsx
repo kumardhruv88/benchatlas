@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import {
   BarChart2,
   BookOpen,
@@ -22,6 +23,12 @@ import { Button } from '@/components/ui/Button';
 import { getFeaturedBenchmarks, getBenchmarkStats, getDistinctCategories } from '@/lib/api/benchmarks';
 import { formatCategory, formatScore } from '@/lib/utils/format';
 import type { BenchmarkCategory } from '@/lib/types';
+
+const NeuralNetCanvas = dynamic(
+  () => import('@/components/ui/NeuralNetCanvas/NeuralNetCanvas').then((m) => ({ default: m.NeuralNetCanvas })),
+  { ssr: false }
+);
+
 
 export const metadata: Metadata = {
   title: 'BenchAtlas — LLM Benchmark Intelligence Platform',
@@ -68,57 +75,61 @@ export default function HomePage() {
     <>
       {/* ── Hero ───────────────────────────────────────────────────────── */}
       <section className={styles.hero} aria-labelledby="hero-heading">
+        <NeuralNetCanvas />
         <div className={`container ${styles.hero__inner}`}>
-          <div className={styles.hero__eyebrow}>
-            <FlaskConical size={12} aria-hidden="true" />
-            Research Intelligence Platform
-          </div>
-
-          <h1 id="hero-heading" className={styles.hero__title}>
-            Which benchmark should you <em>trust</em> for what?
-          </h1>
-
-          <p className={styles.hero__subtitle}>
-            A structured intelligence platform covering every major LLM evaluation benchmark.
-            Understand methodology, saturation, contamination risk, score history, and when
-            to trust — or distrust — a result.
-          </p>
-
-          <div className={styles.hero__actions}>
-            <Button variant="primary" size="lg" as="a" href="/benchmarks">
-              Explore Benchmarks
-              <ArrowRight size={16} aria-hidden="true" />
-            </Button>
-            <Button variant="secondary" size="lg" as="a" href="/leaderboards">
-              View Leaderboards
-            </Button>
-            <Button variant="ghost" size="lg" as="a" href="/compare">
-              <GitCompare size={16} aria-hidden="true" />
-              Compare Models
-            </Button>
-          </div>
-
-          {/* Stats bar */}
-          <div className={styles.hero__stats} role="list" aria-label="Platform statistics">
-            <div className={styles.hero__stat} role="listitem">
-              <span className={styles.hero__stat_value}>{stats.total}</span>
-              <span className={styles.hero__stat_label}>Benchmarks tracked</span>
+          <div className={styles.hero__content}>
+            <div className={styles.hero__eyebrow}>
+              <FlaskConical size={12} aria-hidden="true" />
+              Research Intelligence Platform
             </div>
-            <div className={styles.hero__stat} role="listitem">
-              <span className={styles.hero__stat_value}>{stats.categories}</span>
-              <span className={styles.hero__stat_label}>Capability categories</span>
+
+            <h1 id="hero-heading" className={styles.hero__title}>
+              Which benchmark should you <em>trust</em> for what?
+            </h1>
+
+            <p className={styles.hero__subtitle}>
+              A structured intelligence platform covering every major LLM evaluation benchmark.
+              Understand methodology, saturation, contamination risk, score history, and when
+              to trust — or distrust — a result.
+            </p>
+
+            <div className={styles.hero__actions}>
+              <Button variant="primary" size="lg" as="a" href="/benchmarks">
+                Explore Benchmarks
+                <ArrowRight size={16} aria-hidden="true" />
+              </Button>
+              <Button variant="secondary" size="lg" as="a" href="/leaderboards">
+                View Leaderboards
+              </Button>
+              <Button variant="ghost" size="lg" as="a" href="/compare">
+                <GitCompare size={16} aria-hidden="true" />
+                Compare Models
+              </Button>
             </div>
-            <div className={styles.hero__stat} role="listitem">
-              <span className={styles.hero__stat_value}>{stats.totalScores}</span>
-              <span className={styles.hero__stat_label}>Model evaluations indexed</span>
-            </div>
-            <div className={styles.hero__stat} role="listitem">
-              <span className={styles.hero__stat_value}>{stats.saturated}</span>
-              <span className={styles.hero__stat_label}>Saturated benchmarks</span>
+
+            {/* Stats bar */}
+            <div className={styles.hero__stats} role="list" aria-label="Platform statistics">
+              <div className={styles.hero__stat} role="listitem">
+                <span className={styles.hero__stat_value}>{stats.total}</span>
+                <span className={styles.hero__stat_label}>Benchmarks tracked</span>
+              </div>
+              <div className={styles.hero__stat} role="listitem">
+                <span className={styles.hero__stat_value}>{stats.categories}</span>
+                <span className={styles.hero__stat_label}>Capability categories</span>
+              </div>
+              <div className={styles.hero__stat} role="listitem">
+                <span className={styles.hero__stat_value}>{stats.totalScores}</span>
+                <span className={styles.hero__stat_label}>Model evaluations indexed</span>
+              </div>
+              <div className={styles.hero__stat} role="listitem">
+                <span className={styles.hero__stat_value}>{stats.saturated}</span>
+                <span className={styles.hero__stat_label}>Saturated benchmarks</span>
+              </div>
             </div>
           </div>
         </div>
       </section>
+
 
       {/* ── Category Explorer ──────────────────────────────────────────── */}
       <section className={styles.section} aria-labelledby="categories-heading">
