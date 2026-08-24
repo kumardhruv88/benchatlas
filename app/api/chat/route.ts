@@ -24,17 +24,22 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid messages format' }, { status: 400 });
     }
 
-    const formattedMessages = [
-      { role: 'system', content: SYSTEM_PROMPT },
-      ...messages.map((m: any) => ({
+    // Fold the system prompt into the first user message to avoid 400 errors
+    // with models that don't support the 'system' role natively (like Mistral).
+    const formattedMessages = messages.map((m: any, index: number) => {
+      let content = m.content;
+      if (index === 0 && m.role === 'user') {
+        content = `${SYSTEM_PROMPT}\n\nUser Question:\n${content}`;
+      }
+      return {
         role: m.role === 'user' ? 'user' : 'assistant',
-        content: m.content
-      }))
-    ];
+        content: content
+      };
+    });
 
     // Using a fast, free conversational model hosted on Hugging Face Inference API
     const response = await hf.chatCompletion({
-      model: 'mistralai/Mistral-7B-Instruct-v0.2',
+      model: 'Qwen/Qwen2.5-72B-Instruct',
       messages: formattedMessages,
       max_tokens: 512,
       temperature: 0.7,

@@ -50,9 +50,9 @@ export function ChatWidget() {
     setIsLoading(true);
 
     try {
-      // Send the conversation history (excluding errors)
+      // Send the conversation history (excluding errors and the initial welcome message)
       const chatHistory = messages
-        .filter((m) => m.role !== 'error')
+        .filter((m) => m.role !== 'error' && m.id !== 'welcome')
         .map((m) => ({ role: m.role, content: m.content }));
       
       const response = await fetch('/api/chat', {
