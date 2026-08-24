@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import '../styles/globals.css';
 import { Navigation } from '@/components/layout/Navigation';
 import { Footer } from '@/components/layout/Footer';
+import { ChatWidget } from '@/components/ui/ChatWidget';
 
 export const metadata: Metadata = {
   title: {
@@ -61,6 +62,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <ChatWidget />
       </body>
     </html>
   );
