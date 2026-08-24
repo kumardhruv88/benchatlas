@@ -1,59 +1,63 @@
-import { Benchmark } from '../../types/benchmark';
+import type { Benchmark } from '../../types/benchmark';
 
 export const mbpp: Benchmark = {
   id: 'mbpp',
   slug: 'mbpp',
   name: 'MBPP',
+  abbreviation: 'MBPP',
   category: 'coding',
-  subcategories: [],
-  modalities: ['text'],
+  subcategories: ['code-generation', 'python'],
+  modalities: ['text', 'code'],
   languages: ['en'],
-  purpose: 'Evaluate reasoning',
-  capability: 'reasoning',
-  description: 'Mostly Basic Python Problems.',
-  taskFormat: 'multiple-choice',
-  evaluationMetric: 'Accuracy',
-  scoringMethod: 'Automated',
-  evaluationProtocol: 'exact-match',
-  saturationStatus: 'approaching-saturation',
-  contaminationRisk: 'unknown',
-  launchDate: '2023-01-01',
-  maintainer: 'Research Org',
-  license: 'MIT',
+  purpose: 'Evaluate Python code generation on beginner-to-intermediate programming tasks sourced from crowd-workers.',
+  capability: 'code generation',
+  description: 'MBPP (Mostly Basic Python Problems) contains 974 beginner-to-intermediate Python programming tasks sourced from crowd-workers, each with 3 automated test cases. Unlike HumanEval (written by experts), MBPP covers common scripting patterns and data structure operations. The "sanitized" MBPP+ variant from EvalPlus adds 35× more tests to reduce false positives. MBPP is now largely saturated for frontier models but remains useful for comparing smaller models.',
+  taskFormat: 'code-generation',
+  evaluationMetric: 'pass@1',
+  scoringMethod: 'Automated (unit tests)',
+  evaluationProtocol: 'execution-based',
+  saturationStatus: 'saturated',
+  contaminationRisk: 'high',
+  datasetSize: 374,
+  datasetSizeLabel: '374 test problems',
+  launchDate: '2021-08-13',
+  maintainer: 'Jacob Austin, et al. (Google Research)',
+  license: 'CC BY 4.0',
+  paper: {
+    title: 'Program Synthesis with Large Language Models',
+    url: 'https://arxiv.org/abs/2108.07732',
+    venue: 'arXiv',
+    year: 2021,
+  },
+  datasetUrl: 'https://huggingface.co/datasets/mbpp',
+  humanBaseline: 78.0,
+  randomBaseline: 0,
+  saturationThreshold: 90,
   scores: [
-    {
-      modelId: 'gpt-4o',
-      modelName: 'GPT-4o',
-      modelFamily: 'GPT-4',
-      score: 88.5,
-      normalizedScore: 88.5,
-      scoredAt: '2024-05-13'
-    },
-    {
-      modelId: 'claude-3-5-sonnet',
-      modelName: 'Claude 3.5 Sonnet',
-      modelFamily: 'Claude 3',
-      score: 88.1,
-      normalizedScore: 88.1,
-      scoredAt: '2024-06-20'
-    }
+    { modelId: 'gpt-4o', modelName: 'GPT-4o', modelFamily: 'GPT-4', score: 91.1, normalizedScore: 91.1, isOfficial: false, scoredAt: '2024-05-13' },
+    { modelId: 'claude-3-5-sonnet', modelName: 'Claude 3.5 Sonnet', modelFamily: 'Claude 3', score: 90.5, normalizedScore: 90.5, isOfficial: false, scoredAt: '2024-10-22' },
+    { modelId: 'llama-3-1-70b', modelName: 'Llama 3.1 70B', modelFamily: 'Llama', score: 83.0, normalizedScore: 83.0, isOfficial: true, scoredAt: '2024-07-23' },
+    { modelId: 'mistral-7b', modelName: 'Mistral 7B', modelFamily: 'Mistral', score: 59.5, normalizedScore: 59.5, isOfficial: true, scoredAt: '2023-09-27' },
+    { modelId: 'codestral', modelName: 'Codestral 22B', modelFamily: 'Mistral', score: 83.0, normalizedScore: 83.0, isOfficial: true, scoredAt: '2024-05-29' },
   ],
-  topScore: 88.5,
+  topScore: 91.1,
   topScoringModel: 'GPT-4o',
-  methodology: 'Evaluated using exact match on multiple choice questions.',
+  methodology: '3-shot evaluation. Models generate a Python function body. Correctness determined by executing 3 hand-written test cases. MBPP+ uses expanded test suites for more reliable evaluation.',
   limitations: [
-    {
-      title: 'Data Leakage',
-      description: 'May be present in training data.',
-      severity: 'medium'
-    }
+    { title: 'Saturated for frontier models', description: 'Top models exceed 90%; no longer discriminates between leading coding models.', severity: 'high' },
+    { title: 'Only 3 test cases per problem', description: 'Very sparse testing allows many buggy solutions to pass. Use MBPP+ for rigorous evaluation.', severity: 'high' },
   ],
   timeline: [
-    { date: '2023-01-01', event: 'Benchmark published', description: 'Initial release' }
+    { date: '2021-08-13', event: 'MBPP published by Google Research', description: 'Crowdsourced code generation benchmark with automated testing.' },
+    { date: '2024-05-13', event: 'GPT-4o reaches 91.1%', description: 'Benchmark saturated for frontier models.' },
   ],
-  evaluationHarnesses: ['lm-evaluation-harness'],
-  recommendedUseCases: ['General evaluation'],
-  notRecommendedFor: ['Specialized edge cases'],
-  tags: ['coding', 'text'],
-  featured: false
+  evaluationHarnesses: ['EvalPlus', 'bigcode-evaluation-harness', 'lm-evaluation-harness'],
+  recommendedUseCases: ['Code generation evaluation for small/mid-size models', 'Python scripting ability assessment'],
+  notRecommendedFor: ['Frontier model comparison (saturated)', 'Software engineering evaluation (use SWE-bench)'],
+  tags: ['coding', 'python', 'code-generation', 'saturated'],
+  featured: false,
+  relations: [
+    { slug: 'humaneval-plus', type: 'complementary', description: 'HumanEval+ adds more rigorous testing' },
+    { slug: 'lcb', type: 'harder-version', description: 'LiveCodeBench provides harder, contamination-free coding evaluation' },
+  ],
 };

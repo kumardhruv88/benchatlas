@@ -1,59 +1,58 @@
-import { Benchmark } from '../../types/benchmark';
+import type { Benchmark } from '../../types/benchmark';
 
 export const winogrande: Benchmark = {
   id: 'winogrande',
   slug: 'winogrande',
   name: 'WinoGrande',
+  abbreviation: 'WinoGrande',
   category: 'reasoning',
-  subcategories: [],
+  subcategories: ['commonsense', 'winograd'],
   modalities: ['text'],
   languages: ['en'],
-  purpose: 'Evaluate reasoning',
-  capability: 'reasoning',
-  description: 'Large-scale pronoun resolution and commonsense reasoning.',
+  purpose: 'Scale and harden the original Winograd Schema Challenge using crowdsourced coreference pronoun resolution problems.',
+  capability: 'commonsense reasoning',
+  description: 'WinoGrande contains 44,000 coreference pronoun resolution problems, heavily filtered using crowdsourcing to remove biases that allow models to "cheat." Given two sentences that differ only in the trigger word, models must resolve which noun a pronoun refers to. The problem requires commonsense knowledge. WinoGrande was designed to be robust to statistical artifacts. Like HellaSwag, it is now saturated for frontier models.',
   taskFormat: 'multiple-choice',
   evaluationMetric: 'Accuracy',
   scoringMethod: 'Automated',
   evaluationProtocol: 'exact-match',
-  saturationStatus: 'approaching-saturation',
-  contaminationRisk: 'unknown',
-  launchDate: '2023-01-01',
-  maintainer: 'Research Org',
-  license: 'MIT',
+  saturationStatus: 'saturated',
+  contaminationRisk: 'high',
+  datasetSize: 1267,
+  datasetSizeLabel: '1,267 test examples',
+  launchDate: '2019-07-25',
+  maintainer: 'Keisuke Sakaguchi, et al. (Allen Institute for AI)',
+  license: 'Apache 2.0',
+  paper: {
+    title: 'WinoGrande: An Adversarial Winograd Schema Challenge at Scale',
+    url: 'https://arxiv.org/abs/1907.10641',
+    venue: 'AAAI',
+    year: 2020,
+  },
+  datasetUrl: 'https://huggingface.co/datasets/winogrande',
+  humanBaseline: 94.0,
+  randomBaseline: 50.0,
+  saturationThreshold: 90,
   scores: [
-    {
-      modelId: 'gpt-4o',
-      modelName: 'GPT-4o',
-      modelFamily: 'GPT-4',
-      score: 88.5,
-      normalizedScore: 88.5,
-      scoredAt: '2024-05-13'
-    },
-    {
-      modelId: 'claude-3-5-sonnet',
-      modelName: 'Claude 3.5 Sonnet',
-      modelFamily: 'Claude 3',
-      score: 88.1,
-      normalizedScore: 88.1,
-      scoredAt: '2024-06-20'
-    }
+    { modelId: 'gpt-4o', modelName: 'GPT-4o', modelFamily: 'GPT-4', score: 91.0, normalizedScore: 91.0, isOfficial: false, scoredAt: '2024-05-13' },
+    { modelId: 'llama-3-1-70b', modelName: 'Llama 3.1 70B', modelFamily: 'Llama', score: 85.2, normalizedScore: 85.2, isOfficial: true, scoredAt: '2024-07-23' },
+    { modelId: 'mistral-7b', modelName: 'Mistral 7B', modelFamily: 'Mistral', score: 73.7, normalizedScore: 73.7, isOfficial: true, scoredAt: '2023-09-27' },
+    { modelId: 'mixtral-8x7b', modelName: 'Mixtral 8x7B', modelFamily: 'Mixtral', score: 81.4, normalizedScore: 81.4, isOfficial: true, scoredAt: '2023-12-11' },
   ],
-  topScore: 88.5,
+  topScore: 91.0,
   topScoringModel: 'GPT-4o',
-  methodology: 'Evaluated using exact match on multiple choice questions.',
+  methodology: 'Binary choice pronoun resolution. Models must select which of two nouns the pronoun refers to. Log-likelihood scoring is standard. 5-shot evaluation.',
   limitations: [
-    {
-      title: 'Data Leakage',
-      description: 'May be present in training data.',
-      severity: 'medium'
-    }
+    { title: 'Saturated for frontier models', description: 'Frontier models match humans. No discrimination between top models.', severity: 'high' },
   ],
   timeline: [
-    { date: '2023-01-01', event: 'Benchmark published', description: 'Initial release' }
+    { date: '2019-07-25', event: 'WinoGrande published', description: 'Scaling and crowdsourcing produce a more robust Winograd Schema variant.' },
+    { date: '2024-05-13', event: 'GPT-4o effectively saturates at 91%', description: 'Benchmark no longer useful for frontier model comparison.' },
   ],
-  evaluationHarnesses: ['lm-evaluation-harness'],
-  recommendedUseCases: ['General evaluation'],
-  notRecommendedFor: ['Specialized edge cases'],
-  tags: ['reasoning', 'text'],
-  featured: false
+  evaluationHarnesses: ['lm-evaluation-harness', 'HELM'],
+  recommendedUseCases: ['Commonsense reasoning in small models', 'Pre-training data quality measurement'],
+  notRecommendedFor: ['Frontier model comparison'],
+  tags: ['commonsense', 'coreference', 'winograd', 'saturated'],
+  featured: false,
 };
+

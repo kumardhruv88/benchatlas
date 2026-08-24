@@ -713,10 +713,15 @@ export default async function BenchmarkDetailPage({
                       {benchmark.paper.title} ↗
                     </a>
                     <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-quaternary)', marginTop: 'var(--space-1)' }}>
-                      {benchmark.paper.authors.slice(0, 3).join(', ')}
-                      {benchmark.paper.authors.length > 3 ? ' et al.' : ''}
-                      {benchmark.paper.venue && ` · ${benchmark.paper.venue}`}
-                      · {benchmark.paper.year}
+                      {benchmark.paper.authors && benchmark.paper.authors.length > 0 && (
+                        <>
+                          {benchmark.paper.authors.slice(0, 3).join(', ')}
+                          {benchmark.paper.authors.length > 3 ? ' et al.' : ''}
+                          {' · '}
+                        </>
+                      )}
+                      {benchmark.paper.venue && `${benchmark.paper.venue} · `}
+                      {benchmark.paper.year}
                     </span>
                   </div>
                 </div>

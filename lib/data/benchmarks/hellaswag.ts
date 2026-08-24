@@ -1,59 +1,69 @@
-import { Benchmark } from '../../types/benchmark';
+import type { Benchmark } from '../../types/benchmark';
 
 export const hellaswag: Benchmark = {
   id: 'hellaswag',
   slug: 'hellaswag',
   name: 'HellaSwag',
+  abbreviation: 'HellaSwag',
   category: 'reasoning',
-  subcategories: [],
+  subcategories: ['commonsense', 'natural-language-inference'],
   modalities: ['text'],
   languages: ['en'],
-  purpose: 'Evaluate reasoning',
-  capability: 'reasoning',
-  description: 'Commonsense NLI.',
+  purpose: 'Test commonsense NLI by selecting the most plausible continuation of a paragraph from ActivityNet captions and WikiHow articles.',
+  capability: 'commonsense reasoning',
+  description: 'HellaSwag tests grounded commonsense reasoning through sentence completion. Given a short video description or instructional paragraph, models must choose the correct continuation from 4 options. The benchmark was adversarially constructed using ACAF (Adversarial Filtering) to fool BERT-class models; humans score ~95% while BERT scored ~48%. Today it is fully saturated for frontier models. It remains useful for evaluating smaller language models and comparing pre-training data quality.',
   taskFormat: 'multiple-choice',
   evaluationMetric: 'Accuracy',
   scoringMethod: 'Automated',
   evaluationProtocol: 'exact-match',
-  saturationStatus: 'approaching-saturation',
-  contaminationRisk: 'unknown',
-  launchDate: '2023-01-01',
-  maintainer: 'Research Org',
+  saturationStatus: 'saturated',
+  contaminationRisk: 'high',
+  datasetSize: 10042,
+  datasetSizeLabel: '10,042 test examples',
+  launchDate: '2019-05-19',
+  maintainer: 'Rowan Zellers, et al. (University of Washington)',
   license: 'MIT',
+  paper: {
+    title: 'HellaSwag: Can a Machine Really Finish Your Sentence?',
+    url: 'https://arxiv.org/abs/1905.07830',
+    venue: 'ACL',
+    year: 2019,
+  },
+  repositoryUrl: 'https://github.com/rowanzellers/hellaswag',
+  datasetUrl: 'https://huggingface.co/datasets/Rowan/hellaswag',
+  humanBaseline: 95.6,
+  randomBaseline: 25.0,
+  saturationThreshold: 90,
   scores: [
-    {
-      modelId: 'gpt-4o',
-      modelName: 'GPT-4o',
-      modelFamily: 'GPT-4',
-      score: 88.5,
-      normalizedScore: 88.5,
-      scoredAt: '2024-05-13'
-    },
-    {
-      modelId: 'claude-3-5-sonnet',
-      modelName: 'Claude 3.5 Sonnet',
-      modelFamily: 'Claude 3',
-      score: 88.1,
-      normalizedScore: 88.1,
-      scoredAt: '2024-06-20'
-    }
+    { modelId: 'gpt-4o', modelName: 'GPT-4o', modelFamily: 'GPT-4', score: 95.3, normalizedScore: 95.3, isOfficial: false, scoredAt: '2024-05-13' },
+    { modelId: 'llama-3-1-70b', modelName: 'Llama 3.1 70B', modelFamily: 'Llama', score: 87.5, normalizedScore: 87.5, isOfficial: true, scoredAt: '2024-07-23' },
+    { modelId: 'gemini-1-5-flash', modelName: 'Gemini 1.5 Flash', modelFamily: 'Gemini', score: 91.5, normalizedScore: 91.5, isOfficial: true, scoredAt: '2024-05-14' },
+    { modelId: 'mistral-7b', modelName: 'Mistral 7B', modelFamily: 'Mistral', score: 81.3, normalizedScore: 81.3, isOfficial: true, scoredAt: '2023-09-27' },
+    { modelId: 'mixtral-8x7b', modelName: 'Mixtral 8x7B', modelFamily: 'Mixtral', score: 86.5, normalizedScore: 86.5, isOfficial: true, scoredAt: '2023-12-11' },
+    { modelId: 'gpt-3-5-turbo', modelName: 'GPT-3.5 Turbo', modelFamily: 'GPT-3.5', score: 85.5, normalizedScore: 85.5, isOfficial: false, scoredAt: '2023-11-06' },
+    { modelId: 'llama-2-70b', modelName: 'Llama 2 70B', modelFamily: 'Llama', score: 87.3, normalizedScore: 87.3, isOfficial: true, scoredAt: '2023-07-18' },
   ],
-  topScore: 88.5,
+  topScore: 95.3,
   topScoringModel: 'GPT-4o',
-  methodology: 'Evaluated using exact match on multiple choice questions.',
+  methodology: 'Zero-shot or 10-shot evaluation. Models select one of four sentence continuations. Score is percentage of correct continuations. Log-likelihood scoring is typically used (model picks the continuation with highest log probability).',
   limitations: [
-    {
-      title: 'Data Leakage',
-      description: 'May be present in training data.',
-      severity: 'medium'
-    }
+    { title: 'Saturated for frontier models', description: 'Top models match or exceed human performance (95.6%); no longer useful for comparing frontier systems.', severity: 'high' },
+    { title: 'English only', description: 'All source data is English; multilingual generalization is not evaluated.', severity: 'medium' },
+    { title: 'ActivityNet/WikiHow bias', description: 'Data drawn from specific domains; may not represent general commonsense.', severity: 'low' },
   ],
   timeline: [
-    { date: '2023-01-01', event: 'Benchmark published', description: 'Initial release' }
+    { date: '2019-05-19', event: 'HellaSwag published at ACL 2019', description: 'Adversarially constructed to defeat BERT-class models.' },
+    { date: '2022-06-01', event: 'GPT-3 era models cross 75%', description: 'Commonsense reasoning improves significantly with scale.' },
+    { date: '2023-07-18', event: 'Llama 2 70B scores 87.3%', description: 'Open-source models approach human performance.' },
+    { date: '2024-05-13', event: 'GPT-4o effectively matches humans', description: 'Benchmark saturated for frontier models.' },
   ],
-  evaluationHarnesses: ['lm-evaluation-harness'],
-  recommendedUseCases: ['General evaluation'],
-  notRecommendedFor: ['Specialized edge cases'],
-  tags: ['reasoning', 'text'],
-  featured: false
+  evaluationHarnesses: ['lm-evaluation-harness', 'HELM'],
+  recommendedUseCases: [
+    'Evaluating commonsense reasoning in small-to-medium language models',
+    'Measuring effect of pre-training data quality',
+  ],
+  notRecommendedFor: ['Comparing frontier models (saturated)', 'Measuring complex reasoning ability'],
+  tags: ['commonsense', 'reasoning', 'nlp', 'saturated', 'adversarial'],
+  featured: false,
+  relations: [{ slug: 'arc-challenge', type: 'complementary', description: 'ARC-Challenge tests science commonsense reasoning' }],
 };

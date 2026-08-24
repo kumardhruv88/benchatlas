@@ -1,59 +1,67 @@
-import { Benchmark } from '../../types/benchmark';
+import type { Benchmark } from '../../types/benchmark';
 
 export const webarena: Benchmark = {
   id: 'webarena',
   slug: 'webarena',
   name: 'WebArena',
-  category: 'agentic-tool-use',
-  subcategories: [],
-  modalities: ['text'],
+  abbreviation: 'WebArena',
+  category: 'agents',
+  subcategories: ['web-navigation', 'autonomous-agents'],
+  modalities: ['text', 'image'],
   languages: ['en'],
-  purpose: 'Evaluate agentic',
-  capability: 'agentic',
-  description: 'A realistic web environment.',
-  taskFormat: 'multiple-choice',
-  evaluationMetric: 'Accuracy',
-  scoringMethod: 'Automated',
-  evaluationProtocol: 'exact-match',
-  saturationStatus: 'approaching-saturation',
-  contaminationRisk: 'unknown',
-  launchDate: '2023-01-01',
-  maintainer: 'Research Org',
-  license: 'MIT',
+  purpose: 'Evaluate autonomous web navigation agents on realistic, reproducible web tasks in a simulated browser environment.',
+  capability: 'web navigation',
+  description: 'WebArena provides a realistic, reproducible environment for evaluating web-based AI agents. It includes functional simulations of popular websites (Reddit, GitLab, Shopping, Maps, Wikipedia) and 812 long-horizon tasks requiring multi-step web navigation. Tasks involve form submission, search, information retrieval across sites, and content creation. Unlike HumanEval, WebArena requires agents to interact with actual web UI elements. Success rates remain low even for frontier models, making it a strong benchmark for agentic AI research.',
+  taskFormat: 'agentic',
+  evaluationMetric: 'Task Success Rate (%)',
+  scoringMethod: 'Automated (functional evaluation)',
+  evaluationProtocol: 'task-completion',
+  saturationStatus: 'not-saturated',
+  contaminationRisk: 'low',
+  datasetSize: 812,
+  datasetSizeLabel: '812 tasks',
+  launchDate: '2023-07-24',
+  maintainer: 'Shuyan Zhou, et al. (CMU)',
+  license: 'Apache 2.0',
+  paper: {
+    title: 'WebArena: A Realistic Web Environment for Building Autonomous Agents',
+    url: 'https://arxiv.org/abs/2307.13854',
+    venue: 'ICLR',
+    year: 2024,
+  },
+  repositoryUrl: 'https://github.com/web-arena-x/webarena',
+  humanBaseline: 78.2,
+  randomBaseline: 0,
+  saturationThreshold: 50,
   scores: [
-    {
-      modelId: 'gpt-4o',
-      modelName: 'GPT-4o',
-      modelFamily: 'GPT-4',
-      score: 88.5,
-      normalizedScore: 88.5,
-      scoredAt: '2024-05-13'
-    },
-    {
-      modelId: 'claude-3-5-sonnet',
-      modelName: 'Claude 3.5 Sonnet',
-      modelFamily: 'Claude 3',
-      score: 88.1,
-      normalizedScore: 88.1,
-      scoredAt: '2024-06-20'
-    }
+    { modelId: 'claude-3-5-sonnet', modelName: 'Claude 3.5 Sonnet (agent)', modelFamily: 'Claude 3', score: 39.1, normalizedScore: 39.1, isOfficial: false, scoredAt: '2024-10-22' },
+    { modelId: 'gpt-4o', modelName: 'GPT-4o (agent)', modelFamily: 'GPT-4', score: 33.1, normalizedScore: 33.1, isOfficial: false, scoredAt: '2024-05-13' },
+    { modelId: 'gemini-1-5-pro', modelName: 'Gemini 1.5 Pro (agent)', modelFamily: 'Gemini', score: 26.0, normalizedScore: 26.0, isOfficial: false, scoredAt: '2024-05-14' },
+    { modelId: 'gpt-4-turbo', modelName: 'GPT-4 Turbo (agent)', modelFamily: 'GPT-4', score: 19.2, normalizedScore: 19.2, isOfficial: false, scoredAt: '2024-02-01' },
   ],
-  topScore: 88.5,
-  topScoringModel: 'GPT-4o',
-  methodology: 'Evaluated using exact match on multiple choice questions.',
+  topScore: 39.1,
+  topScoringModel: 'Claude 3.5 Sonnet',
+  methodology: 'Agents interact with headless browser environments using HTML/accessibility tree observations. Each task has a natural language instruction. Functional correctness is evaluated automatically by checking database state, page content, or specific UI conditions. Human annotators achieve 78.2% success rate.',
   limitations: [
-    {
-      title: 'Data Leakage',
-      description: 'May be present in training data.',
-      severity: 'medium'
-    }
+    { title: 'Web UI is brittle', description: 'Slight website changes can break agent trajectories; requires controlled simulation environment.', severity: 'medium' },
+    { title: 'Compute-intensive evaluation', description: 'Full evaluation requires multi-step browser rollouts, making it expensive.', severity: 'medium' },
+    { title: 'Scaffold-dependent', description: 'Agent scaffolding significantly affects results; bare model comparisons are not meaningful.', severity: 'high' },
   ],
   timeline: [
-    { date: '2023-01-01', event: 'Benchmark published', description: 'Initial release' }
+    { date: '2023-07-24', event: 'WebArena published at arXiv', description: 'CMU introduces a reproducible web agent evaluation environment.' },
+    { date: '2024-01-01', event: 'Accepted at ICLR 2024', description: 'Becomes the standard autonomous web agent benchmark.' },
+    { date: '2024-10-22', event: 'Claude 3.5 Sonnet achieves 39.1%', description: 'Best known result; humans still at 78.2%.' },
   ],
-  evaluationHarnesses: ['lm-evaluation-harness'],
-  recommendedUseCases: ['General evaluation'],
-  notRecommendedFor: ['Specialized edge cases'],
-  tags: ['agentic-tool-use', 'text'],
-  featured: false
+  evaluationHarnesses: ['WebArena official evaluator'],
+  recommendedUseCases: [
+    'Evaluating autonomous web navigation agents',
+    'Testing multi-step planning and execution in web environments',
+    'Research into agentic AI capabilities',
+  ],
+  notRecommendedFor: [
+    'Evaluating base language models without agent scaffolding',
+    'Quick benchmarking (requires full environment setup)',
+  ],
+  tags: ['agents', 'web-navigation', 'autonomous', 'agentic', 'multi-step'],
+  featured: true,
 };

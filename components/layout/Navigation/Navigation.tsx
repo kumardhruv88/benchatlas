@@ -6,10 +6,7 @@ import { usePathname } from 'next/navigation';
 import {
   BarChart2,
   BookOpen,
-  Cpu,
-  Trophy,
   GitCompare,
-  Ruler,
   FlaskConical,
   Clock,
   Search,
@@ -27,12 +24,10 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { label: 'Benchmarks', href: '/benchmarks', icon: BarChart2 },
-  { label: 'Models', href: '/models', icon: Cpu },
-  { label: 'Leaderboards', href: '/leaderboards', icon: Trophy },
-  { label: 'Compare', href: '/compare', icon: GitCompare },
-  { label: 'Metrics', href: '/metrics', icon: Ruler },
-  { label: 'Research', href: '/research', icon: FlaskConical },
-  { label: 'Timeline', href: '/timeline', icon: Clock },
+  { label: 'Compare',    href: '/compare',    icon: GitCompare },
+  { label: 'Research',   href: '/research',   icon: FlaskConical },
+  { label: 'Timeline',   href: '/timeline',   icon: Clock },
+  { label: 'About',      href: '/about',      icon: BookOpen },
 ];
 
 export function Navigation() {
@@ -156,15 +151,6 @@ export function Navigation() {
             </Link>
           );
         })}
-        <div className={styles['nav__mobile-divider']} />
-        <Link href="/about" className={styles['nav__mobile-link']}>
-          <BookOpen size={18} aria-hidden="true" />
-          About
-        </Link>
-        <Link href="/api-docs" className={styles['nav__mobile-link']}>
-          <Zap size={18} aria-hidden="true" />
-          API
-        </Link>
       </div>
     </>
   );

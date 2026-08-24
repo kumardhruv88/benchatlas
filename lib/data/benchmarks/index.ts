@@ -8,9 +8,11 @@ import { gpqa } from './gpqa';
 import { gsm8k } from './gsm8k';
 import { hellaswag } from './hellaswag';
 import { humaneval_plus } from './humaneval-plus';
+import { humaneval } from './humaneval';
 import { lcb } from './lcb';
 import { mbpp } from './mbpp';
 import { minerva_math } from './minerva-math';
+import { mmlu } from './mmlu';
 import { nq } from './nq';
 import { olympiadbench } from './olympiadbench';
 import { piqa } from './piqa';
@@ -29,10 +31,12 @@ export const benchmarks: Benchmark[] = [
   gpqa,
   gsm8k,
   hellaswag,
+  humaneval,
   humaneval_plus,
   lcb,
   mbpp,
   minerva_math,
+  mmlu,
   nq,
   olympiadbench,
   piqa,
@@ -65,7 +69,7 @@ export function toBenchmarkSummary(benchmark: Benchmark): BenchmarkSummary {
     languages: benchmark.languages,
     evaluationMetric: benchmark.evaluationMetric,
     featured: benchmark.featured,
-    tags: benchmark.tags
+    tags: benchmark.tags,
   };
 }
 

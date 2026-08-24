@@ -126,7 +126,7 @@ function BenchmarksDirectory() {
     result = [...result].sort((a, b) => {
       if (sortKey === 'name') return a.name.localeCompare(b.name);
       if (sortKey === 'topScore') return (b.topScore ?? 0) - (a.topScore ?? 0);
-      if (sortKey === 'year') return (b.year ?? 0) - (a.year ?? 0);
+      if (sortKey === 'year') return (b.launchDate ?? '').localeCompare(a.launchDate ?? '');
       if (sortKey === 'category') return a.category.localeCompare(b.category);
       return 0;
     });

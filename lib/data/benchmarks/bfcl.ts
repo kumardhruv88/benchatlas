@@ -1,59 +1,65 @@
-import { Benchmark } from '../../types/benchmark';
+import type { Benchmark } from '../../types/benchmark';
 
 export const bfcl: Benchmark = {
   id: 'bfcl',
   slug: 'bfcl',
-  name: 'Berkeley Function Calling Leaderboard',
-  category: 'agentic-tool-use',
-  subcategories: [],
+  name: 'Berkeley Function-Calling Leaderboard',
+  abbreviation: 'BFCL',
+  category: 'coding',
+  subcategories: ['function-calling', 'tool-use', 'agents'],
   modalities: ['text'],
   languages: ['en'],
-  purpose: 'Evaluate agentic',
-  capability: 'agentic',
-  description: 'Evaluating LLM Tool Use capabilities.',
-  taskFormat: 'multiple-choice',
-  evaluationMetric: 'Accuracy',
-  scoringMethod: 'Automated',
-  evaluationProtocol: 'exact-match',
-  saturationStatus: 'approaching-saturation',
-  contaminationRisk: 'unknown',
-  launchDate: '2023-01-01',
-  maintainer: 'Research Org',
-  license: 'MIT',
+  purpose: 'Evaluate model ability to call external functions/tools correctly given a user query and function schema.',
+  capability: 'function calling / tool use',
+  description: 'The Berkeley Function-Calling Leaderboard (BFCL) evaluates how accurately models can call external APIs and functions. Given a user request and a set of available function schemas, models must generate the correct function name and arguments in the right format. BFCL covers simple single-turn function calls, multi-turn conversations, parallel function calls, nested function calls, and function relevance detection. It is the primary benchmark for AI assistant "tool use" capability. v3 includes 2,000+ functions across diverse domains.',
+  taskFormat: 'structured-generation',
+  evaluationMetric: 'AST Accuracy (argument parsing)',
+  scoringMethod: 'Automated (AST comparison)',
+  evaluationProtocol: 'ast-match',
+  saturationStatus: 'not-saturated',
+  contaminationRisk: 'low',
+  datasetSize: 2000,
+  datasetSizeLabel: '2,000+ function scenarios',
+  launchDate: '2024-02-15',
+  maintainer: 'Fanjia Yan, et al. (UC Berkeley)',
+  license: 'Apache 2.0',
+  paper: {
+    title: 'BFCL: Gorilla Large Language Model Connected with Massive APIs',
+    url: 'https://arxiv.org/abs/2402.11410',
+    venue: 'arXiv',
+    year: 2024,
+  },
+  repositoryUrl: 'https://github.com/ShishirPatil/gorilla',
   scores: [
-    {
-      modelId: 'gpt-4o',
-      modelName: 'GPT-4o',
-      modelFamily: 'GPT-4',
-      score: 88.5,
-      normalizedScore: 88.5,
-      scoredAt: '2024-05-13'
-    },
-    {
-      modelId: 'claude-3-5-sonnet',
-      modelName: 'Claude 3.5 Sonnet',
-      modelFamily: 'Claude 3',
-      score: 88.1,
-      normalizedScore: 88.1,
-      scoredAt: '2024-06-20'
-    }
+    { modelId: 'gpt-4o', modelName: 'GPT-4o (2024-11-20)', modelFamily: 'GPT-4', score: 75.4, normalizedScore: 75.4, isOfficial: true, scoredAt: '2024-11-20' },
+    { modelId: 'claude-3-5-sonnet', modelName: 'Claude 3.5 Sonnet', modelFamily: 'Claude 3', score: 74.0, normalizedScore: 74.0, isOfficial: true, scoredAt: '2024-10-22' },
+    { modelId: 'gemini-1-5-pro', modelName: 'Gemini 1.5 Pro', modelFamily: 'Gemini', score: 72.3, normalizedScore: 72.3, isOfficial: true, scoredAt: '2024-05-14' },
+    { modelId: 'llama-3-1-70b', modelName: 'Llama 3.1 70B (FC)', modelFamily: 'Llama', score: 67.8, normalizedScore: 67.8, isOfficial: true, scoredAt: '2024-07-23' },
+    { modelId: 'mistral-7b', modelName: 'Mistral 7B Instruct', modelFamily: 'Mistral', score: 46.2, normalizedScore: 46.2, isOfficial: true, scoredAt: '2024-01-11' },
   ],
-  topScore: 88.5,
+  topScore: 75.4,
   topScoringModel: 'GPT-4o',
-  methodology: 'Evaluated using exact match on multiple choice questions.',
+  methodology: 'Models are given a user query and one or more function schemas in JSON format. They must output a correctly structured function call. Evaluation compares generated function name and arguments to the ground truth via AST (Abstract Syntax Tree) matching, which is more permissive than exact string match. Scores are reported as Overall AST Accuracy.',
   limitations: [
-    {
-      title: 'Data Leakage',
-      description: 'May be present in training data.',
-      severity: 'medium'
-    }
+    { title: 'Function format sensitivity', description: 'Models using different function call formats (JSON vs Python) may score differently.', severity: 'medium' },
+    { title: 'Domain-specific APIs', description: 'Coverage of real-world API schemas varies; certain professional domains may be underrepresented.', severity: 'low' },
+    { title: 'Rapidly evolving', description: 'BFCL is updated frequently; version comparisons require care.', severity: 'medium' },
   ],
   timeline: [
-    { date: '2023-01-01', event: 'Benchmark published', description: 'Initial release' }
+    { date: '2024-02-15', event: 'BFCL v1 published', description: 'First comprehensive function-calling evaluation framework.' },
+    { date: '2024-06-01', event: 'BFCL v2 released', description: 'Added multi-turn and parallel function calling scenarios.' },
+    { date: '2024-11-01', event: 'BFCL v3 with 2000+ functions', description: 'Significantly expanded function library and domain coverage.' },
   ],
-  evaluationHarnesses: ['lm-evaluation-harness'],
-  recommendedUseCases: ['General evaluation'],
-  notRecommendedFor: ['Specialized edge cases'],
-  tags: ['agentic-tool-use', 'text'],
-  featured: false
+  evaluationHarnesses: ['Gorilla BFCL evaluator'],
+  recommendedUseCases: [
+    'Evaluating AI assistant tool-use and function-calling capability',
+    'Comparing models for agentic workflow integration',
+    'Testing multi-turn function chaining',
+  ],
+  notRecommendedFor: [
+    'General reasoning evaluation',
+    'Evaluating models without function-calling fine-tuning',
+  ],
+  tags: ['function-calling', 'tool-use', 'agents', 'structured-generation', 'api'],
+  featured: true,
 };

@@ -1,59 +1,62 @@
-import { Benchmark } from '../../types/benchmark';
+import type { Benchmark } from '../../types/benchmark';
 
 export const arc_challenge: Benchmark = {
   id: 'arc-challenge',
   slug: 'arc-challenge',
-  name: 'ARC-Challenge',
+  name: 'ARC Challenge',
+  abbreviation: 'ARC-C',
   category: 'reasoning',
-  subcategories: [],
+  subcategories: ['commonsense', 'science', 'grade-school'],
   modalities: ['text'],
   languages: ['en'],
-  purpose: 'Evaluate reasoning',
-  capability: 'reasoning',
-  description: 'AI2 Reasoning Challenge.',
+  purpose: 'Test grade 3–9 science question answering using questions that retrieval-based and word co-occurrence methods fail to answer.',
+  capability: 'science reasoning',
+  description: 'The ARC Challenge Set contains 1,172 multiple-choice grade-school science questions specifically chosen to defeat simple retrieval and word co-occurrence algorithms. Questions come from US standardized science exams. The benchmark was designed to resist retrieval-based systems but is now saturated for neural language models. It remains useful for evaluating small models.',
   taskFormat: 'multiple-choice',
-  evaluationMetric: 'Accuracy',
+  evaluationMetric: 'Accuracy (normalized)',
   scoringMethod: 'Automated',
   evaluationProtocol: 'exact-match',
-  saturationStatus: 'approaching-saturation',
-  contaminationRisk: 'unknown',
-  launchDate: '2023-01-01',
-  maintainer: 'Research Org',
-  license: 'MIT',
+  saturationStatus: 'saturated',
+  contaminationRisk: 'medium',
+  datasetSize: 1172,
+  datasetSizeLabel: '1,172 questions',
+  launchDate: '2018-03-14',
+  maintainer: 'Peter Clark, et al. (Allen Institute for AI)',
+  license: 'CC BY-SA 4.0',
+  paper: {
+    title: 'Think you have Solved Question Answering? Try ARC, the AI2 Reasoning Challenge',
+    url: 'https://arxiv.org/abs/1803.05457',
+    venue: 'arXiv',
+    year: 2018,
+  },
+  repositoryUrl: 'https://github.com/fchollet/ARC',
+  datasetUrl: 'https://huggingface.co/datasets/ai2_arc',
+  humanBaseline: 91.0,
+  randomBaseline: 25.0,
+  saturationThreshold: 90,
   scores: [
-    {
-      modelId: 'gpt-4o',
-      modelName: 'GPT-4o',
-      modelFamily: 'GPT-4',
-      score: 88.5,
-      normalizedScore: 88.5,
-      scoredAt: '2024-05-13'
-    },
-    {
-      modelId: 'claude-3-5-sonnet',
-      modelName: 'Claude 3.5 Sonnet',
-      modelFamily: 'Claude 3',
-      score: 88.1,
-      normalizedScore: 88.1,
-      scoredAt: '2024-06-20'
-    }
+    { modelId: 'gpt-4o', modelName: 'GPT-4o', modelFamily: 'GPT-4', score: 96.4, normalizedScore: 96.4, isOfficial: false, scoredAt: '2024-05-13' },
+    { modelId: 'llama-3-1-70b', modelName: 'Llama 3.1 70B', modelFamily: 'Llama', score: 92.9, normalizedScore: 92.9, isOfficial: true, scoredAt: '2024-07-23' },
+    { modelId: 'mistral-7b', modelName: 'Mistral 7B', modelFamily: 'Mistral', score: 59.98, normalizedScore: 59.98, isOfficial: true, scoredAt: '2023-09-27' },
+    { modelId: 'llama-2-70b', modelName: 'Llama 2 70B', modelFamily: 'Llama', score: 67.3, normalizedScore: 67.3, isOfficial: true, scoredAt: '2023-07-18' },
+    { modelId: 'mixtral-8x7b', modelName: 'Mixtral 8x7B', modelFamily: 'Mixtral', score: 85.7, normalizedScore: 85.7, isOfficial: true, scoredAt: '2023-12-11' },
+    { modelId: 'phi-2', modelName: 'Phi-2', modelFamily: 'Phi', score: 75.1, normalizedScore: 75.1, isOfficial: true, scoredAt: '2023-12-12' },
   ],
-  topScore: 88.5,
+  topScore: 96.4,
   topScoringModel: 'GPT-4o',
-  methodology: 'Evaluated using exact match on multiple choice questions.',
+  methodology: 'Normalized multiple-choice evaluation. Models score each answer option by log-likelihood divided by answer length (normalization prevents bias toward shorter answers). 0-shot evaluation is standard.',
   limitations: [
-    {
-      title: 'Data Leakage',
-      description: 'May be present in training data.',
-      severity: 'medium'
-    }
+    { title: 'Saturated', description: 'Frontier models far exceed human performance. No longer useful for top-tier model comparison.', severity: 'high' },
+    { title: 'US-centric curriculum', description: 'Based on US K-12 science standards; may disadvantage models trained on international data.', severity: 'medium' },
   ],
   timeline: [
-    { date: '2023-01-01', event: 'Benchmark published', description: 'Initial release' }
+    { date: '2018-03-14', event: 'ARC released by Allen AI', description: 'Designed to defeat retrieval-based QA systems.' },
+    { date: '2023-09-27', event: 'Mistral 7B scores 59.98%', description: 'Small model shows strong science reasoning.' },
+    { date: '2024-05-13', event: 'GPT-4o reaches 96.4%', description: 'Benchmark saturated for frontier models.' },
   ],
-  evaluationHarnesses: ['lm-evaluation-harness'],
-  recommendedUseCases: ['General evaluation'],
-  notRecommendedFor: ['Specialized edge cases'],
-  tags: ['reasoning', 'text'],
-  featured: false
+  evaluationHarnesses: ['lm-evaluation-harness', 'HELM', 'OpenLLM Leaderboard'],
+  recommendedUseCases: ['Evaluating small language models (1B–13B parameters)', 'Measuring pre-training data science coverage'],
+  notRecommendedFor: ['Comparing frontier models (saturated)', 'Advanced science reasoning'],
+  tags: ['science', 'commonsense', 'grade-school', 'reasoning', 'saturated'],
+  featured: false,
 };

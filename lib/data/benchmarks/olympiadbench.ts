@@ -1,59 +1,64 @@
-import { Benchmark } from '../../types/benchmark';
+import type { Benchmark } from '../../types/benchmark';
 
 export const olympiadbench: Benchmark = {
   id: 'olympiadbench',
   slug: 'olympiadbench',
   name: 'OlympiadBench',
+  abbreviation: 'OlympiadBench',
   category: 'mathematics',
-  subcategories: [],
+  subcategories: ['olympiad', 'competition-math', 'physics'],
   modalities: ['text'],
-  languages: ['en'],
-  purpose: 'Evaluate reasoning',
-  capability: 'reasoning',
-  description: 'Olympiad-level mathematics and physics problems.',
-  taskFormat: 'multiple-choice',
+  languages: ['en', 'zh'],
+  purpose: 'Evaluate expert-level olympiad mathematics and physics problem-solving in both English and Chinese.',
+  capability: 'olympiad reasoning',
+  description: 'OlympiadBench is a bilingual (English/Chinese) benchmark of 8,476 olympiad-level problems in mathematics and physics, sourced from international and Chinese math/physics olympiads. Problems include International Mathematical Olympiad (IMO) problems, Chinese National High School Math League, and physics competitions. It is significantly harder than MATH and AIME, as olympiad problems require proof-writing and multi-step derivations that may span pages. Current models are far from saturation.',
+  taskFormat: 'open-ended',
   evaluationMetric: 'Accuracy',
-  scoringMethod: 'Automated',
-  evaluationProtocol: 'exact-match',
-  saturationStatus: 'approaching-saturation',
-  contaminationRisk: 'unknown',
-  launchDate: '2023-01-01',
-  maintainer: 'Research Org',
+  scoringMethod: 'Automated (answer matching)',
+  evaluationProtocol: 'symbolic-match',
+  saturationStatus: 'not-saturated',
+  contaminationRisk: 'low',
+  datasetSize: 8476,
+  datasetSizeLabel: '8,476 problems',
+  launchDate: '2024-02-04',
+  maintainer: 'Chaoqun He, et al. (Tsinghua University)',
   license: 'MIT',
+  paper: {
+    title: 'OlympiadBench: A Challenging Benchmark for Promoting AGI with Olympiad-Level Bilingual Multimodal Scientific Problems',
+    url: 'https://arxiv.org/abs/2402.14008',
+    venue: 'ACL',
+    year: 2024,
+  },
+  repositoryUrl: 'https://github.com/OpenBMB/OlympiadBench',
+  humanBaseline: 80.0,
+  randomBaseline: 0,
+  saturationThreshold: 60,
   scores: [
-    {
-      modelId: 'gpt-4o',
-      modelName: 'GPT-4o',
-      modelFamily: 'GPT-4',
-      score: 88.5,
-      normalizedScore: 88.5,
-      scoredAt: '2024-05-13'
-    },
-    {
-      modelId: 'claude-3-5-sonnet',
-      modelName: 'Claude 3.5 Sonnet',
-      modelFamily: 'Claude 3',
-      score: 88.1,
-      normalizedScore: 88.1,
-      scoredAt: '2024-06-20'
-    }
+    { modelId: 'o3', modelName: 'o3 (high-compute)', modelFamily: 'OpenAI o-series', score: 88.0, normalizedScore: 88.0, isOfficial: false, scoredAt: '2025-04-16' },
+    { modelId: 'deepseek-r1', modelName: 'DeepSeek-R1', modelFamily: 'DeepSeek', score: 63.3, normalizedScore: 63.3, isOfficial: true, scoredAt: '2025-01-20' },
+    { modelId: 'claude-3-7-sonnet', modelName: 'Claude 3.7 Sonnet', modelFamily: 'Claude 3', score: 55.5, normalizedScore: 55.5, isOfficial: false, scoredAt: '2025-02-24' },
+    { modelId: 'gpt-4o', modelName: 'GPT-4o', modelFamily: 'GPT-4', score: 43.3, normalizedScore: 43.3, isOfficial: false, scoredAt: '2024-05-13' },
+    { modelId: 'gemini-1-5-pro', modelName: 'Gemini 1.5 Pro', modelFamily: 'Gemini', score: 35.9, normalizedScore: 35.9, isOfficial: false, scoredAt: '2024-05-14' },
   ],
-  topScore: 88.5,
-  topScoringModel: 'GPT-4o',
-  methodology: 'Evaluated using exact match on multiple choice questions.',
+  topScore: 88.0,
+  topScoringModel: 'o3',
+  methodology: 'Models generate step-by-step solutions to olympiad problems. Final answers are extracted and compared with symbolic matching. Both English and Chinese problem variants evaluated. Score is mean accuracy across all problem types.',
   limitations: [
-    {
-      title: 'Data Leakage',
-      description: 'May be present in training data.',
-      severity: 'medium'
-    }
+    { title: 'Free-form answer extraction challenging', description: 'Some olympiad answers are proofs or multi-part; automated checking is imperfect.', severity: 'medium' },
+    { title: 'Bilingual scoring variance', description: 'Models may score differently on EN vs ZH variants due to pre-training language distribution.', severity: 'medium' },
   ],
   timeline: [
-    { date: '2023-01-01', event: 'Benchmark published', description: 'Initial release' }
+    { date: '2024-02-04', event: 'OlympiadBench published', description: 'First comprehensive bilingual olympiad-level benchmark.' },
+    { date: '2025-01-20', event: 'DeepSeek-R1 scores 63.3%', description: 'Shows reasoning models significantly outperform standard LLMs on olympiad math.' },
+    { date: '2025-04-16', event: 'o3 approaches 88%', description: 'First model to substantially exceed average human competitor performance.' },
   ],
-  evaluationHarnesses: ['lm-evaluation-harness'],
-  recommendedUseCases: ['General evaluation'],
-  notRecommendedFor: ['Specialized edge cases'],
-  tags: ['mathematics', 'text'],
-  featured: false
+  evaluationHarnesses: ['OlympiadBench evaluator'],
+  recommendedUseCases: ['Expert-level math and physics reasoning evaluation', 'Bilingual (EN/ZH) scientific reasoning assessment'],
+  notRecommendedFor: ['Evaluating non-reasoning base models', 'General mathematics (too hard)'],
+  tags: ['mathematics', 'physics', 'olympiad', 'competition', 'bilingual'],
+  featured: false,
+  relations: [
+    { slug: 'aime', type: 'complementary', description: 'AIME focuses on American high-school competition math' },
+    { slug: 'minerva-math', type: 'simpler-version', description: 'MATH/Minerva is easier than olympiad-level problems' },
+  ],
 };

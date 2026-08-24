@@ -1,59 +1,58 @@
-import { Benchmark } from '../../types/benchmark';
+import type { Benchmark } from '../../types/benchmark';
 
 export const triviaqa: Benchmark = {
   id: 'triviaqa',
   slug: 'triviaqa',
   name: 'TriviaQA',
+  abbreviation: 'TriviaQA',
   category: 'knowledge',
-  subcategories: [],
+  subcategories: ['factual-qa', 'trivia'],
   modalities: ['text'],
   languages: ['en'],
-  purpose: 'Evaluate knowledge',
-  capability: 'knowledge',
-  description: 'Reading comprehension dataset.',
-  taskFormat: 'multiple-choice',
-  evaluationMetric: 'Accuracy',
+  purpose: 'Evaluate open-domain factual question answering on trivia questions with evidence documents from Wikipedia and web sources.',
+  capability: 'factual knowledge',
+  description: 'TriviaQA contains 95,000 question-answer pairs from trivia websites paired with evidence documents from Wikipedia and web. Models answer questions that require factual recall and document comprehension. The benchmark comes in a "wiki" variant (Wikipedia evidence) and "web" variant. TriviaQA is approaching saturation for frontier models but remains useful for retrieval-augmented generation (RAG) evaluation.',
+  taskFormat: 'open-ended',
+  evaluationMetric: 'Exact Match / F1',
   scoringMethod: 'Automated',
-  evaluationProtocol: 'exact-match',
+  evaluationProtocol: 'token-match',
   saturationStatus: 'approaching-saturation',
-  contaminationRisk: 'unknown',
-  launchDate: '2023-01-01',
-  maintainer: 'Research Org',
-  license: 'MIT',
+  contaminationRisk: 'high',
+  datasetSize: 11313,
+  datasetSizeLabel: '11,313 test examples',
+  launchDate: '2017-05-09',
+  maintainer: 'Mandar Joshi, et al. (University of Washington)',
+  license: 'Apache 2.0',
+  paper: {
+    title: 'TriviaQA: A Reading Comprehension Dataset over Trivia Questions',
+    url: 'https://arxiv.org/abs/1705.03551',
+    venue: 'ACL',
+    year: 2017,
+  },
+  datasetUrl: 'https://huggingface.co/datasets/trivia_qa',
+  humanBaseline: 79.0,
+  randomBaseline: 0,
+  saturationThreshold: 80,
   scores: [
-    {
-      modelId: 'gpt-4o',
-      modelName: 'GPT-4o',
-      modelFamily: 'GPT-4',
-      score: 88.5,
-      normalizedScore: 88.5,
-      scoredAt: '2024-05-13'
-    },
-    {
-      modelId: 'claude-3-5-sonnet',
-      modelName: 'Claude 3.5 Sonnet',
-      modelFamily: 'Claude 3',
-      score: 88.1,
-      normalizedScore: 88.1,
-      scoredAt: '2024-06-20'
-    }
+    { modelId: 'gpt-4o', modelName: 'GPT-4o', modelFamily: 'GPT-4', score: 85.4, normalizedScore: 85.4, isOfficial: false, scoredAt: '2024-05-13' },
+    { modelId: 'llama-3-1-70b', modelName: 'Llama 3.1 70B', modelFamily: 'Llama', score: 79.6, normalizedScore: 79.6, isOfficial: true, scoredAt: '2024-07-23' },
+    { modelId: 'gemini-1-5-pro', modelName: 'Gemini 1.5 Pro', modelFamily: 'Gemini', score: 83.5, normalizedScore: 83.5, isOfficial: true, scoredAt: '2024-05-14' },
+    { modelId: 'mistral-7b', modelName: 'Mistral 7B', modelFamily: 'Mistral', score: 64.8, normalizedScore: 64.8, isOfficial: true, scoredAt: '2023-09-27' },
   ],
-  topScore: 88.5,
+  topScore: 85.4,
   topScoringModel: 'GPT-4o',
-  methodology: 'Evaluated using exact match on multiple choice questions.',
+  methodology: '5-shot evaluation without retrieval augmentation (closed-book). Models answer from parametric memory. F1 score computed at token level.',
   limitations: [
-    {
-      title: 'Data Leakage',
-      description: 'May be present in training data.',
-      severity: 'medium'
-    }
+    { title: 'High contamination risk', description: 'Trivia facts are widely present in pre-training data.', severity: 'high' },
+    { title: 'Approaching saturation', description: 'Frontier models exceed human performance. Useful mainly for smaller models.', severity: 'medium' },
   ],
   timeline: [
-    { date: '2023-01-01', event: 'Benchmark published', description: 'Initial release' }
+    { date: '2017-05-09', event: 'TriviaQA published at ACL 2017', description: 'Introduces paired evidence documents for QA evaluation.' },
+    { date: '2024-05-13', event: 'GPT-4o scores 85.4%', description: 'Surpasses human performance; benchmark approaching saturation.' },
   ],
-  evaluationHarnesses: ['lm-evaluation-harness'],
-  recommendedUseCases: ['General evaluation'],
-  notRecommendedFor: ['Specialized edge cases'],
-  tags: ['knowledge', 'text'],
-  featured: false
+  evaluationHarnesses: ['lm-evaluation-harness', 'HELM'],
+  recommendedUseCases: ['Factual QA for mid-size models', 'RAG evaluation with evidence documents'],
+  notRecommendedFor: ['Frontier model comparison (approaching saturation)', 'Contamination-sensitive evaluation'],
+  tags: ['factual-qa', 'trivia', 'reading-comprehension'],
+  featured: false,
 };

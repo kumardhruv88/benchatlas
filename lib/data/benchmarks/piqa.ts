@@ -1,59 +1,57 @@
-import { Benchmark } from '../../types/benchmark';
+import type { Benchmark } from '../../types/benchmark';
 
 export const piqa: Benchmark = {
   id: 'piqa',
   slug: 'piqa',
   name: 'PIQA',
+  abbreviation: 'PIQA',
   category: 'reasoning',
-  subcategories: [],
+  subcategories: ['physical-intuition', 'commonsense'],
   modalities: ['text'],
   languages: ['en'],
-  purpose: 'Evaluate reasoning',
-  capability: 'reasoning',
-  description: 'Physical Interaction Question Answering.',
+  purpose: 'Evaluate physical commonsense reasoning about everyday physical interactions and procedures.',
+  capability: 'physical reasoning',
+  description: 'PIQA (Physical Intuition QA) tests whether models understand physical world properties through 16,000 multiple-choice questions about everyday physical interactions. Given a goal (e.g., "To make a hard-boiled egg"), models select the correct physical procedure from two options. It tests intuitive physics and procedural knowledge. Frontier models have fully saturated this benchmark.',
   taskFormat: 'multiple-choice',
   evaluationMetric: 'Accuracy',
   scoringMethod: 'Automated',
   evaluationProtocol: 'exact-match',
-  saturationStatus: 'approaching-saturation',
-  contaminationRisk: 'unknown',
-  launchDate: '2023-01-01',
-  maintainer: 'Research Org',
-  license: 'MIT',
+  saturationStatus: 'saturated',
+  contaminationRisk: 'high',
+  datasetSize: 3000,
+  datasetSizeLabel: '3,000 test examples',
+  launchDate: '2019-11-26',
+  maintainer: 'Yonatan Bisk, et al. (Carnegie Mellon University)',
+  license: 'AFL-3.0',
+  paper: {
+    title: 'PIQA: Reasoning about Physical Commonsense in Natural Language',
+    url: 'https://arxiv.org/abs/1911.11641',
+    venue: 'AAAI',
+    year: 2020,
+  },
+  datasetUrl: 'https://huggingface.co/datasets/piqa',
+  humanBaseline: 95.0,
+  randomBaseline: 50.0,
+  saturationThreshold: 90,
   scores: [
-    {
-      modelId: 'gpt-4o',
-      modelName: 'GPT-4o',
-      modelFamily: 'GPT-4',
-      score: 88.5,
-      normalizedScore: 88.5,
-      scoredAt: '2024-05-13'
-    },
-    {
-      modelId: 'claude-3-5-sonnet',
-      modelName: 'Claude 3.5 Sonnet',
-      modelFamily: 'Claude 3',
-      score: 88.1,
-      normalizedScore: 88.1,
-      scoredAt: '2024-06-20'
-    }
+    { modelId: 'gpt-4o', modelName: 'GPT-4o', modelFamily: 'GPT-4', score: 93.0, normalizedScore: 93.0, isOfficial: false, scoredAt: '2024-05-13' },
+    { modelId: 'llama-3-1-70b', modelName: 'Llama 3.1 70B', modelFamily: 'Llama', score: 87.8, normalizedScore: 87.8, isOfficial: true, scoredAt: '2024-07-23' },
+    { modelId: 'mistral-7b', modelName: 'Mistral 7B', modelFamily: 'Mistral', score: 83.0, normalizedScore: 83.0, isOfficial: true, scoredAt: '2023-09-27' },
+    { modelId: 'mixtral-8x7b', modelName: 'Mixtral 8x7B', modelFamily: 'Mixtral', score: 83.5, normalizedScore: 83.5, isOfficial: true, scoredAt: '2023-12-11' },
   ],
-  topScore: 88.5,
+  topScore: 93.0,
   topScoringModel: 'GPT-4o',
-  methodology: 'Evaluated using exact match on multiple choice questions.',
+  methodology: '0-shot log-likelihood evaluation. Models select which of two procedures achieves a physical goal.',
   limitations: [
-    {
-      title: 'Data Leakage',
-      description: 'May be present in training data.',
-      severity: 'medium'
-    }
+    { title: 'Fully saturated', description: 'Frontier models near human performance. Not useful for top-model comparisons.', severity: 'high' },
   ],
   timeline: [
-    { date: '2023-01-01', event: 'Benchmark published', description: 'Initial release' }
+    { date: '2019-11-26', event: 'PIQA published at AAAI 2020', description: 'First dedicated physical commonsense benchmark.' },
+    { date: '2024-05-13', event: 'GPT-4o reaches 93%', description: 'Benchmark effectively saturated.' },
   ],
   evaluationHarnesses: ['lm-evaluation-harness'],
-  recommendedUseCases: ['General evaluation'],
-  notRecommendedFor: ['Specialized edge cases'],
-  tags: ['reasoning', 'text'],
-  featured: false
+  recommendedUseCases: ['Physical commonsense in small models'],
+  notRecommendedFor: ['Frontier model comparison'],
+  tags: ['physical-reasoning', 'commonsense', 'saturated'],
+  featured: false,
 };

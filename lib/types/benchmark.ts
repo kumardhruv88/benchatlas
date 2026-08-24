@@ -12,7 +12,9 @@ export type BenchmarkCategory =
   | 'long-context'
   | 'multilingual'
   | 'multimodal'
+  | 'safety'
   | 'safety-alignment'
+  | 'agents'
   | 'agentic-tool-use'
   | 'factuality'
   | 'hallucination'
@@ -36,20 +38,28 @@ export type ContaminationRisk = 'low' | 'medium' | 'high' | 'unknown';
 export type TaskFormat =
   | 'multiple-choice'
   | 'free-form'
+  | 'open-ended'
   | 'code-generation'
   | 'fill-in-the-blank'
   | 'ranking'
   | 'dialogue'
   | 'mixed'
-  | 'structured-output';
+  | 'structured-output'
+  | 'structured-generation'
+  | 'agentic';
 
 export type EvaluationProtocol =
   | 'exact-match'
   | 'llm-judge'
+  | 'model-judge'
   | 'human-eval'
   | 'execution-based'
   | 'rule-based'
   | 'embedding-similarity'
+  | 'token-match'
+  | 'symbolic-match'
+  | 'ast-match'
+  | 'task-completion'
   | 'tournament';
 
 export type Modality = 'text' | 'image' | 'audio' | 'video' | 'code' | 'structured-data';
@@ -57,9 +67,14 @@ export type Modality = 'text' | 'image' | 'audio' | 'video' | 'code' | 'structur
 export type License =
   | 'MIT'
   | 'Apache-2.0'
+  | 'Apache 2.0'
   | 'CC-BY-4.0'
+  | 'CC BY 4.0'
   | 'CC-BY-NC-4.0'
   | 'CC-BY-SA-4.0'
+  | 'CC BY-SA 4.0'
+  | 'AFL-3.0'
+  | 'Public'
   | 'custom'
   | 'proprietary'
   | 'unknown';
@@ -95,7 +110,7 @@ export interface BenchmarkTimelineEntry {
 
 export interface Paper {
   title: string;
-  authors: string[];
+  authors?: string[];
   venue?: string;
   year: number;
   url: string;
@@ -119,12 +134,17 @@ export type BenchmarkRelationType =
   | 'same-capability'
   | 'same-dataset-family'
   | 'alternative'
-  | 'recommended-companion';
+  | 'recommended-companion'
+  | 'harder-version'
+  | 'simpler-version'
+  | 'easier-version'
+  | 'complementary';
 
 export interface BenchmarkRelation {
   slug: string;
   type: BenchmarkRelationType;
   note?: string;
+  description?: string;
 }
 
 // ─── Main Benchmark Interface ─────────────────────────────────────────────────

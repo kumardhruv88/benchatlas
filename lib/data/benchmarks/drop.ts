@@ -1,59 +1,58 @@
-import { Benchmark } from '../../types/benchmark';
+import type { Benchmark } from '../../types/benchmark';
 
 export const drop: Benchmark = {
   id: 'drop',
   slug: 'drop',
   name: 'DROP',
+  abbreviation: 'DROP',
   category: 'reasoning',
-  subcategories: [],
+  subcategories: ['reading-comprehension', 'numerical-reasoning'],
   modalities: ['text'],
   languages: ['en'],
-  purpose: 'Evaluate reasoning',
-  capability: 'reasoning',
-  description: 'Discrete Reasoning Over Paragraphs.',
-  taskFormat: 'multiple-choice',
-  evaluationMetric: 'Accuracy',
-  scoringMethod: 'Automated',
-  evaluationProtocol: 'exact-match',
+  purpose: 'Test reading comprehension requiring discrete numerical operations (addition, subtraction, counting, sorting) over passages.',
+  capability: 'numerical reasoning',
+  description: 'DROP (Discrete Reasoning Over Paragraphs) requires models to perform complex multi-step numerical reasoning over Wikipedia passages. Unlike simple reading comprehension, DROP requires counting entities, arithmetic over numbers in text, date comparison, and other discrete operations. It contains 96,000 question-answer pairs. Frontier models now largely exceed 90% on DROP, though it remains a useful test for models that need to handle semi-structured numerical data in prose.',
+  taskFormat: 'open-ended',
+  evaluationMetric: 'F1 / Exact Match',
+  scoringMethod: 'Automated (token match)',
+  evaluationProtocol: 'token-match',
   saturationStatus: 'approaching-saturation',
-  contaminationRisk: 'unknown',
-  launchDate: '2023-01-01',
-  maintainer: 'Research Org',
-  license: 'MIT',
+  contaminationRisk: 'medium',
+  datasetSize: 9536,
+  datasetSizeLabel: '9,536 test examples',
+  launchDate: '2019-03-08',
+  maintainer: 'Dheeru Dua, et al. (UC Irvine / AI2)',
+  license: 'CC BY 4.0',
+  paper: {
+    title: 'DROP: A Reading Comprehension Benchmark Requiring Discrete Reasoning Over Paragraphs',
+    url: 'https://arxiv.org/abs/1903.00161',
+    venue: 'NAACL',
+    year: 2019,
+  },
+  datasetUrl: 'https://huggingface.co/datasets/ucinlp/drop',
+  humanBaseline: 96.0,
+  randomBaseline: 0,
+  saturationThreshold: 90,
   scores: [
-    {
-      modelId: 'gpt-4o',
-      modelName: 'GPT-4o',
-      modelFamily: 'GPT-4',
-      score: 88.5,
-      normalizedScore: 88.5,
-      scoredAt: '2024-05-13'
-    },
-    {
-      modelId: 'claude-3-5-sonnet',
-      modelName: 'Claude 3.5 Sonnet',
-      modelFamily: 'Claude 3',
-      score: 88.1,
-      normalizedScore: 88.1,
-      scoredAt: '2024-06-20'
-    }
+    { modelId: 'gpt-4o', modelName: 'GPT-4o', modelFamily: 'GPT-4', score: 91.2, normalizedScore: 91.2, isOfficial: false, scoredAt: '2024-05-13' },
+    { modelId: 'claude-3-5-sonnet', modelName: 'Claude 3.5 Sonnet', modelFamily: 'Claude 3', score: 89.0, normalizedScore: 89.0, isOfficial: false, scoredAt: '2024-10-22' },
+    { modelId: 'llama-3-1-70b', modelName: 'Llama 3.1 70B', modelFamily: 'Llama', score: 84.8, normalizedScore: 84.8, isOfficial: true, scoredAt: '2024-07-23' },
+    { modelId: 'mixtral-8x7b', modelName: 'Mixtral 8x7B', modelFamily: 'Mixtral', score: 74.5, normalizedScore: 74.5, isOfficial: false, scoredAt: '2023-12-11' },
   ],
-  topScore: 88.5,
+  topScore: 91.2,
   topScoringModel: 'GPT-4o',
-  methodology: 'Evaluated using exact match on multiple choice questions.',
+  methodology: 'Models read a passage and answer a question requiring numerical reasoning. Answers may be numbers, dates, or spans. F1 and exact match over tokens are both reported. 3-shot examples are standard.',
   limitations: [
-    {
-      title: 'Data Leakage',
-      description: 'May be present in training data.',
-      severity: 'medium'
-    }
+    { title: 'Approaching saturation', description: 'Frontier models exceed 90% F1. Useful mainly for 7B-70B models.', severity: 'medium' },
+    { title: 'Wikipedia-only passages', description: 'Limited to Wikipedia article style; may not generalize to other document types.', severity: 'low' },
   ],
   timeline: [
-    { date: '2023-01-01', event: 'Benchmark published', description: 'Initial release' }
+    { date: '2019-03-08', event: 'DROP published at NAACL 2019', description: 'Introduces discrete reasoning over text as a benchmark category.' },
+    { date: '2024-05-13', event: 'GPT-4o reaches 91.2% F1', description: 'Benchmark effectively saturated for frontier models.' },
   ],
-  evaluationHarnesses: ['lm-evaluation-harness'],
-  recommendedUseCases: ['General evaluation'],
-  notRecommendedFor: ['Specialized edge cases'],
-  tags: ['reasoning', 'text'],
-  featured: false
+  evaluationHarnesses: ['lm-evaluation-harness', 'HELM'],
+  recommendedUseCases: ['Numerical reading comprehension in mid-size models', 'Testing structured data extraction from prose'],
+  notRecommendedFor: ['Frontier model comparison (approaching saturation)', 'Complex mathematical reasoning'],
+  tags: ['reading-comprehension', 'numerical-reasoning', 'nlp'],
+  featured: false,
 };

@@ -1,59 +1,56 @@
-import { Benchmark } from '../../types/benchmark';
+import type { Benchmark } from '../../types/benchmark';
 
 export const nq: Benchmark = {
   id: 'nq',
   slug: 'nq',
   name: 'Natural Questions',
+  abbreviation: 'NQ',
   category: 'knowledge',
-  subcategories: [],
+  subcategories: ['open-domain-qa', 'wikipedia'],
   modalities: ['text'],
   languages: ['en'],
-  purpose: 'Evaluate knowledge',
-  capability: 'knowledge',
-  description: 'Google search queries.',
-  taskFormat: 'multiple-choice',
-  evaluationMetric: 'Accuracy',
+  purpose: 'Test open-domain QA on real Google Search queries with Wikipedia answers.',
+  capability: 'factual knowledge',
+  description: 'Natural Questions (NQ) contains 320,000 training examples and 7,842 test examples sourced from real Google Search queries. Answers are Wikipedia spans. The benchmark tests both short-form (specific facts) and long-form (paragraph) answer generation. It is one of the most widely used open-domain QA benchmarks, though frontier models have largely saturated the short-form variant.',
+  taskFormat: 'open-ended',
+  evaluationMetric: 'Exact Match',
   scoringMethod: 'Automated',
   evaluationProtocol: 'exact-match',
   saturationStatus: 'approaching-saturation',
-  contaminationRisk: 'unknown',
-  launchDate: '2023-01-01',
-  maintainer: 'Research Org',
-  license: 'MIT',
+  contaminationRisk: 'high',
+  datasetSize: 7842,
+  datasetSizeLabel: '7,842 test examples',
+  launchDate: '2019-01-01',
+  maintainer: 'Tom Kwiatkowski, et al. (Google Research)',
+  license: 'CC-BY-SA-4.0',
+  paper: {
+    title: 'Natural Questions: A Benchmark for Question Answering Research',
+    url: 'https://arxiv.org/abs/1901.08634',
+    venue: 'TACL',
+    year: 2019,
+  },
+  datasetUrl: 'https://huggingface.co/datasets/natural_questions',
+  humanBaseline: 87.0,
+  randomBaseline: 0,
   scores: [
-    {
-      modelId: 'gpt-4o',
-      modelName: 'GPT-4o',
-      modelFamily: 'GPT-4',
-      score: 88.5,
-      normalizedScore: 88.5,
-      scoredAt: '2024-05-13'
-    },
-    {
-      modelId: 'claude-3-5-sonnet',
-      modelName: 'Claude 3.5 Sonnet',
-      modelFamily: 'Claude 3',
-      score: 88.1,
-      normalizedScore: 88.1,
-      scoredAt: '2024-06-20'
-    }
+    { modelId: 'gpt-4o', modelName: 'GPT-4o', modelFamily: 'GPT-4', score: 77.4, normalizedScore: 77.4, isOfficial: false, scoredAt: '2024-05-13' },
+    { modelId: 'llama-3-1-70b', modelName: 'Llama 3.1 70B', modelFamily: 'Llama', score: 62.6, normalizedScore: 62.6, isOfficial: true, scoredAt: '2024-07-23' },
+    { modelId: 'gemini-1-5-pro', modelName: 'Gemini 1.5 Pro', modelFamily: 'Gemini', score: 78.0, normalizedScore: 78.0, isOfficial: true, scoredAt: '2024-05-14' },
   ],
-  topScore: 88.5,
-  topScoringModel: 'GPT-4o',
-  methodology: 'Evaluated using exact match on multiple choice questions.',
+  topScore: 78.0,
+  topScoringModel: 'Gemini 1.5 Pro',
+  methodology: '5-shot evaluation. Models generate a short answer string which is compared against annotated short answers via exact match after normalization (lowercasing, article removal, punctuation removal).',
   limitations: [
-    {
-      title: 'Data Leakage',
-      description: 'May be present in training data.',
-      severity: 'medium'
-    }
+    { title: 'Contamination risk', description: 'Google Search queries and Wikipedia facts are very likely in training data.', severity: 'high' },
+    { title: 'Short-form only', description: 'Short-form variant may miss long-form understanding capabilities.', severity: 'medium' },
   ],
   timeline: [
-    { date: '2023-01-01', event: 'Benchmark published', description: 'Initial release' }
+    { date: '2019-01-01', event: 'Natural Questions published by Google Research', description: 'First benchmark from real search engine queries.' },
+    { date: '2024-05-14', event: 'Gemini 1.5 Pro reaches 78%', description: 'Approaching human performance on short-form answers.' },
   ],
-  evaluationHarnesses: ['lm-evaluation-harness'],
-  recommendedUseCases: ['General evaluation'],
-  notRecommendedFor: ['Specialized edge cases'],
-  tags: ['knowledge', 'text'],
-  featured: false
+  evaluationHarnesses: ['lm-evaluation-harness', 'HELM'],
+  recommendedUseCases: ['Open-domain QA evaluation', 'Measuring factual retrieval from parametric memory'],
+  notRecommendedFor: ['Contamination-sensitive evaluation', 'Frontier model discrimination'],
+  tags: ['open-domain-qa', 'factual', 'wikipedia', 'google'],
+  featured: false,
 };

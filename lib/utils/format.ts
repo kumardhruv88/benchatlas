@@ -21,7 +21,9 @@ export function formatCategory(cat: BenchmarkCategory): string {
     'long-context': 'Long Context',
     multilingual: 'Multilingual',
     multimodal: 'Multimodal',
+    safety: 'Safety',
     'safety-alignment': 'Safety & Alignment',
+    agents: 'Agents',
     'agentic-tool-use': 'Agentic / Tool Use',
     factuality: 'Factuality',
     hallucination: 'Hallucination',
@@ -59,12 +61,15 @@ export function formatTaskFormat(format: TaskFormat): string {
   const labels: Record<TaskFormat, string> = {
     'multiple-choice': 'Multiple Choice',
     'free-form': 'Free Form',
+    'open-ended': 'Open Ended',
     'code-generation': 'Code Generation',
     'fill-in-the-blank': 'Fill in the Blank',
     ranking: 'Ranking',
     dialogue: 'Dialogue',
     mixed: 'Mixed',
     'structured-output': 'Structured Output',
+    'structured-generation': 'Structured Generation',
+    agentic: 'Agentic',
   };
   return labels[format];
 }
