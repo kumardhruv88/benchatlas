@@ -55,6 +55,30 @@ export const mmlu: Benchmark = {
     { title: 'American-centric', description: 'Biased towards US educational curriculum, professional licensing, and cultural context.', severity: 'medium' },
     { title: 'Subject imbalance', description: 'Equal weighting across subjects ignores that some are far more important or harder than others.', severity: 'low' },
   ],
+  exampleQuestions: [
+    {
+      question: "Which of the following describes a key difference between a monopoly and a perfectly competitive firm?",
+      choices: [
+        "A monopoly is a price taker, while a perfectly competitive firm is a price maker.",
+        "A monopoly faces a downward-sloping demand curve, while a perfectly competitive firm faces a perfectly elastic demand curve.",
+        "A monopoly always earns positive economic profit in the long run, while a perfectly competitive firm always earns zero economic profit in the short run.",
+        "A monopoly produces a good with many close substitutes, while a perfectly competitive firm produces a good with no close substitutes."
+      ],
+      answer: "A monopoly faces a downward-sloping demand curve, while a perfectly competitive firm faces a perfectly elastic demand curve.",
+      subject: "Microeconomics"
+    },
+    {
+      question: "If a patient with a suspected myocardial infarction presents with ST-segment elevation in leads II, III, and aVF, which coronary artery is most likely occluded?",
+      choices: [
+        "Left anterior descending artery",
+        "Left circumflex artery",
+        "Right coronary artery",
+        "Left main coronary artery"
+      ],
+      answer: "Right coronary artery",
+      subject: "Professional Medicine"
+    }
+  ],
   timeline: [
     { date: '2020-09-07', event: 'Paper submitted to arXiv', description: 'Hendrycks et al. release MMLU, establishing a new broad-knowledge benchmark standard.' },
     { date: '2021-09-01', event: 'Accepted at ICLR 2021', description: 'Becomes the standard LLM evaluation benchmark across the field.' },

@@ -2,13 +2,13 @@
 
 import { useState, useMemo, useCallback } from 'react';
 import Link from 'next/link';
-import { X, GitCompare, ArrowUpDown, ChevronRight } from 'lucide-react';
-import type { Metadata } from 'next';
+import { X, GitCompare, ChevronRight } from 'lucide-react';
+import { ModelRadarChart } from '@/components/charts/ModelRadarChart';
 import styles from './page.module.css';
 import { CategoryBadge } from '@/components/ui/Badge';
-import { getBenchmarkSummaries } from '@/lib/api/benchmarks';
+import { getBenchmarks } from '@/lib/api/benchmarks';
 import { formatScore, formatCategory } from '@/lib/utils/format';
-import type { BenchmarkSummary } from '@/lib/types';
+import type { Benchmark } from '@/lib/types/benchmark';
 
 // Colour palette for selected model chips/bars
 const MODEL_COLORS = [
@@ -17,16 +17,16 @@ const MODEL_COLORS = [
 ];
 
 // Static list of model names from all scores — built once
-function getAllModels(benchmarks: BenchmarkSummary[]): string[] {
+function getAllModels(benchmarks: Benchmark[]): string[] {
   const set = new Set<string>();
   benchmarks.forEach((b) => {
-    if (b.topScoringModel) set.add(b.topScoringModel);
+    b.scores.forEach(s => set.add(s.modelName));
   });
   return Array.from(set).sort();
 }
 
 export default function ComparePage() {
-  const allBenchmarks = useMemo(() => getBenchmarkSummaries(), []);
+  const allBenchmarks = useMemo(() => getBenchmarks(), []);
   const allModels = useMemo(() => getAllModels(allBenchmarks), [allBenchmarks]);
 
   const [selectedModels, setSelectedModels] = useState<string[]>([]);
@@ -53,7 +53,7 @@ export default function ComparePage() {
   );
 
   // Filtered + sorted benchmarks
-  const benchmarks = useMemo(() => {
+  const sortedBenchmarks = useMemo(() => {
     let list = allBenchmarks;
     if (categoryFilter !== 'all') list = list.filter((b) => b.category === categoryFilter);
     if (sortKey === 'name') list = [...list].sort((a, b) => a.name.localeCompare(b.name));
@@ -62,21 +62,46 @@ export default function ComparePage() {
   }, [allBenchmarks, categoryFilter, sortKey]);
 
   // For each benchmark, find the score for each selected model
-  // We approximate: if the benchmark's topScoringModel matches, use topScore
-  // (A real implementation would join on a full scores table)
   const scoreMatrix = useMemo(() => {
-    return benchmarks.map((b) => {
-      const scores: (number | null)[] = selectedModels.map((m) =>
-        b.topScoringModel === m ? (b.topScore ?? null) : null
-      );
+    return sortedBenchmarks.map((b) => {
+      const scores = selectedModels.map((m) => {
+        const entry = b.scores.find((s) => s.modelName === m);
+        return entry ? entry.score : null;
+      });
       return { benchmark: b, scores };
     });
-  }, [benchmarks, selectedModels]);
+  }, [sortedBenchmarks, selectedModels]);
 
   const maxScorePerBench = useMemo(() =>
-    scoreMatrix.map(({ scores }) => Math.max(...scores.filter((s): s is number => s !== null), 0)),
+    scoreMatrix.map(({ scores }) => {
+      const valid = scores.filter((s): s is number => s !== null);
+      return valid.length > 0 ? Math.max(...valid) : 0;
+    }),
     [scoreMatrix]
   );
+
+  // Calculate category averages for the radar chart if 2 models are selected
+  const radarData = useMemo(() => {
+    if (selectedModels.length !== 2) return [];
+    const [model1, model2] = selectedModels;
+    const catMap = new Map<string, { m1Sum: number, m1Count: number, m2Sum: number, m2Count: number }>();
+    
+    scoreMatrix.forEach(({ benchmark: b, scores }) => {
+      const cat = formatCategory(b.category);
+      if (!catMap.has(cat)) {
+        catMap.set(cat, { m1Sum: 0, m1Count: 0, m2Sum: 0, m2Count: 0 });
+      }
+      const data = catMap.get(cat)!;
+      if (scores[0] !== null) { data.m1Sum += scores[0]; data.m1Count += 1; }
+      if (scores[1] !== null) { data.m2Sum += scores[1]; data.m2Count += 1; }
+    });
+
+    return Array.from(catMap.entries()).map(([cat, data]) => ({
+      category: cat,
+      [model1]: data.m1Count > 0 ? Math.round(data.m1Sum / data.m1Count) : 0,
+      [model2]: data.m2Count > 0 ? Math.round(data.m2Sum / data.m2Count) : 0,
+    }));
+  }, [scoreMatrix, selectedModels]);
 
   return (
     <div className={styles.page}>
@@ -100,7 +125,6 @@ export default function ComparePage() {
 
         {/* Controls */}
         <div className={styles.controls}>
-          {/* Model selector */}
           <div className={styles.controls_group}>
             <span className={styles.controls_label}>Add model</span>
             <select
@@ -121,7 +145,6 @@ export default function ComparePage() {
             </select>
           </div>
 
-          {/* Category filter */}
           <div className={styles.controls_group}>
             <span className={styles.controls_label}>Filter benchmarks</span>
             <select
@@ -137,7 +160,6 @@ export default function ComparePage() {
             </select>
           </div>
 
-          {/* Sort */}
           <div className={styles.controls_group}>
             <span className={styles.controls_label}>Sort by</span>
             <select
@@ -151,7 +173,6 @@ export default function ComparePage() {
             </select>
           </div>
 
-          {/* Selected models chips */}
           {selectedModels.length > 0 && (
             <div className={styles.controls_group}>
               <span className={styles.controls_label}>Selected ({selectedModels.length}/6)</span>
@@ -178,7 +199,6 @@ export default function ComparePage() {
           )}
         </div>
 
-        {/* Comparison table */}
         {selectedModels.length === 0 ? (
           <div className={styles.empty_state} role="status">
             <div className={styles.empty_state__icon}>
@@ -190,9 +210,24 @@ export default function ComparePage() {
             </p>
           </div>
         ) : (
-          <div className={styles.compare_table_wrap}>
-            <table className={styles.compare_table} aria-label="Model benchmark comparison">
-              <thead>
+          <>
+            {selectedModels.length === 2 && radarData.length > 0 && (
+              <div style={{ marginBottom: 'var(--space-12)' }}>
+                <h2 className={styles.section_title} style={{ marginBottom: 'var(--space-4)' }}>
+                  Head-to-Head Comparison
+                </h2>
+                <div style={{ background: 'var(--color-surface)', padding: 'var(--space-6)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--color-border)' }}>
+                  <ModelRadarChart 
+                    modelA={{ id: selectedModels[0], name: selectedModels[0], color: MODEL_COLORS[0] }}
+                    modelB={{ id: selectedModels[1], name: selectedModels[1], color: MODEL_COLORS[1] }}
+                    data={radarData}
+                  />
+                </div>
+              </div>
+            )}
+            <div className={styles.compare_table_wrap}>
+              <table className={styles.compare_table} aria-label="Model benchmark comparison">
+                <thead>
                 <tr>
                   <th>Benchmark</th>
                   {selectedModels.map((m, i) => (
@@ -268,8 +303,10 @@ export default function ComparePage() {
               </tbody>
             </table>
           </div>
+          </>
         )}
       </div>
     </div>
   );
 }
+

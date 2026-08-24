@@ -23,6 +23,7 @@ import type {
   BenchmarkSummary,
   SaturationStatus,
   ContaminationRisk,
+  Modality,
 } from '@/lib/types';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -57,10 +58,19 @@ const SATURATION_OPTIONS: { value: SaturationStatus | 'all'; label: string }[] =
 
 const CONTAMINATION_OPTIONS: { value: ContaminationRisk | 'all'; label: string }[] = [
   { value: 'all', label: 'All risk levels' },
-  { value: 'low', label: 'Low risk' },
-  { value: 'medium', label: 'Medium risk' },
-  { value: 'high', label: 'High risk' },
+  { value: 'high', label: 'High risk (Proven Leakage)' },
+  { value: 'medium', label: 'Medium risk (Suspected)' },
+  { value: 'low', label: 'Low risk (Clean)' },
   { value: 'unknown', label: 'Unknown' },
+];
+
+const MODALITY_OPTIONS: { value: string; label: string }[] = [
+  { value: 'all', label: 'All Modalities' },
+  { value: 'text', label: 'Text' },
+  { value: 'image', label: 'Vision / Image' },
+  { value: 'audio', label: 'Audio' },
+  { value: 'video', label: 'Video' },
+  { value: 'code', label: 'Code' },
 ];
 
 type SortKey = 'name' | 'topScore' | 'year' | 'category';
@@ -103,6 +113,7 @@ function BenchmarksDirectory() {
   const [categoryFilter, setCategoryFilter] = useUrlFilter<BenchmarkCategory | 'all'>('category', 'all');
   const [contaminationFilter, setContaminationFilter] = useUrlFilter<ContaminationRisk | 'all'>('contamination', 'all');
   const [saturationFilter, setSaturationFilter] = useUrlFilter<SaturationStatus | 'all'>('status', 'all');
+  const [modalityFilter, setModalityFilter] = useUrlFilter<Modality | 'all'>('modality', 'all');
   const [sortKey, setSortKey] = useUrlFilter<SortKey>('sort', 'name');
   const [view, setView] = useUrlFilter<ViewMode>('view', 'grid');
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -113,6 +124,7 @@ function BenchmarksDirectory() {
     if (categoryFilter !== 'all') result = result.filter((b) => b.category === categoryFilter);
     if (contaminationFilter !== 'all') result = result.filter((b) => b.contaminationRisk === contaminationFilter);
     if (saturationFilter !== 'all') result = result.filter((b) => b.saturationStatus === saturationFilter);
+    if (modalityFilter !== 'all') result = result.filter((b) => b.modalities?.includes(modalityFilter as Modality));
     if (search.trim()) {
       const q = search.toLowerCase();
       result = result.filter(
@@ -131,20 +143,23 @@ function BenchmarksDirectory() {
       return 0;
     });
     return result;
-  }, [all, categoryFilter, contaminationFilter, saturationFilter, search, sortKey]);
+  }, [all, categoryFilter, contaminationFilter, saturationFilter, modalityFilter, search, sortKey]);
 
   const activeFilters = [
     categoryFilter !== 'all' ? `Category: ${formatCategory(categoryFilter as BenchmarkCategory)}` : null,
     contaminationFilter !== 'all' ? `Contamination: ${contaminationFilter}` : null,
     saturationFilter !== 'all' ? `Status: ${saturationFilter}` : null,
+    modalityFilter !== 'all' ? `Modality: ${modalityFilter}` : null,
   ].filter(Boolean) as string[];
 
   const clearAll = () => {
     setCategoryFilter('all');
     setContaminationFilter('all');
     setSaturationFilter('all');
+    setModalityFilter('all');
     setSearch('');
   };
+
 
   return (
     <div className={styles.explorer_root}>
@@ -257,8 +272,24 @@ function BenchmarksDirectory() {
                   ))}
                 </div>
               </FilterGroup>
+
+              <FilterGroup title="Modality" defaultOpen={false}>
+                <div className={styles.filter_options}>
+                  {MODALITY_OPTIONS.map(({ value, label }) => (
+                    <button
+                      key={value}
+                      className={[styles.filter_opt, modalityFilter === value && styles.filter_opt_active].filter(Boolean).join(' ')}
+                      onClick={() => setModalityFilter(value as Modality | 'all')}
+                      type="button"
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </FilterGroup>
             </div>
           </aside>
+
 
           {/* ── Main Content ─────────────────────────────────────────── */}
           <main className={styles.main_content}>

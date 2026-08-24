@@ -1,0 +1,118 @@
+.page {
+  padding: var(--space-12) 0 var(--space-20);
+}
+
+.header {
+  max-width: 800px;
+  margin-bottom: var(--space-12);
+}
+
+.title {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-4);
+}
+
+.subtitle {
+  font-size: var(--text-xl);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+}
+
+.matrix_container {
+  overflow-x: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.matrix_table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 2px;
+}
+
+.matrix_th {
+  text-align: center;
+  padding: var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  white-space: nowrap;
+  height: 120px;
+  vertical-align: bottom;
+}
+
+.matrix_td_model {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-primary);
+  padding-right: var(--space-4);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.matrix_cell {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  position: relative;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.matrix_cell:hover {
+  transform: scale(1.1);
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.cell_low {
+  background-color: var(--color-status-healthy);
+  opacity: 0.2;
+}
+
+.cell_medium {
+  background-color: var(--color-status-warning);
+  opacity: 0.6;
+}
+
+.cell_high {
+  background-color: var(--color-status-danger);
+  opacity: 0.8;
+}
+
+.cell_unknown {
+  background-color: var(--color-border-strong);
+  opacity: 0.3;
+}
+
+.legend {
+  display: flex;
+  gap: var(--space-6);
+  margin-top: var(--space-8);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.legend_item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.legend_color {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}

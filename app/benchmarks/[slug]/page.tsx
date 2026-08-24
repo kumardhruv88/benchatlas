@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { ScoreBarChart } from '@/components/charts/ScoreBarChart';
 import { TimelineChart } from '@/components/charts/TimelineChart';
+import { DatasetExplorer } from '@/components/ui/DatasetExplorer';
 import styles from './page.module.css';
 import {
   CategoryBadge,
@@ -213,6 +214,15 @@ export default async function BenchmarkDetailPage({
               <div className={styles.prose}>
                 <p>{benchmark.description}</p>
               </div>
+
+              {benchmark.exampleQuestions && benchmark.exampleQuestions.length > 0 && (
+                <div style={{ marginTop: 'var(--space-12)' }}>
+                  <DatasetExplorer 
+                    questions={benchmark.exampleQuestions} 
+                    benchmarkName={benchmark.name} 
+                  />
+                </div>
+              )}
             </section>
 
             {/* ── Timeline ─────────────────────────────────────────── */}
